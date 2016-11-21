@@ -17,7 +17,7 @@ public:
 	std::string longestOverlapSize(std::string &str1, std::string &str2);
 
 	// Remove str from the vector of strings
-	void removeString(std::string &str, std::vector<std::string> &strVec1);
+	void removeString(std::string &str, std::vector<std::string> &strVec1, int pos);
 
 private:
 	std::string str1;

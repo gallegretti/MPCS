@@ -19,60 +19,58 @@ std::vector<std::string> Greedy::nextSolution()
 	std::vector <std::string> str1List = { str1 };
 	std::vector <std::string> str2List = { str2 };
 	std::string candidate;
-	
+
+	int str1LongestOverlapPos = 0;
+	int str2LongestOverlapPos = 0;
 	while (!str1List.empty()) {
 		std::string longestString = "";
 		// Find longest common string between the two sets
-		for (auto string1 : str1List) {
-			for (auto string2 : str2List) {
-				candidate = longestOverlapSize(string1, string2);
+		for (auto string1 = 0; string1 < str1List.size(); string1++) {
+			for (auto string2 = 0; string2 < str2List.size(); string2++) {
+				candidate = longestOverlapSize(str1List[string1], str2List[string2]);
 				// TODO: Random
 				if (candidate.length() > longestString.length()) {
 					longestString = candidate;
+					str1LongestOverlapPos = string1;
+					str2LongestOverlapPos = string2;
 				}
 			}
 		}
 		result.push_back(longestString);
 
 		// Remove from the unmarked strings
-		removeString(longestString, str1List);
-		removeString(longestString, str2List);
+		removeString(longestString, str1List, str1LongestOverlapPos);
+		removeString(longestString, str2List, str2LongestOverlapPos);
 	}
 	return result;
 }
 
 
-void Greedy::removeString(std::string & longestString, std::vector<std::string>& str1List)
+void Greedy::removeString(std::string & longestString, std::vector<std::string>& str1List, int pos)
 {
-	for (int i = 0; i < str1List.size(); i++) {
-		// TODO: Stops at the first? Tries to find one that matches the whole string?
-		auto find = str1List[i].find(longestString);
-		// If found
-		if (find != std::string::npos) {
-			// If it's the whole string, remove the whole element
-			if (str1List[i] == longestString) {
-				for (auto j = i; j < str1List.size() - 1; j++) {
-					str1List[j] = str1List[j + 1];
-				}
-				str1List.pop_back();
-			}
-			// If it's in the begin
-			else if (find == 0) {
-				str1List[i] = str1List[i].substr(longestString.length(), longestString.length());
-			}
-			// If it's in the end
-			else if (find + longestString.length() == str1List[i].length()) {
-				str1List[i] = str1List[i].substr(0, str1List[i].length() - longestString.length());
-			}
-			// If it's in the middle
-			else {
-				// Break into two new elements
-				auto newStrLeft = str1List[i].substr(0, find);
-				auto newStrRight = str1List[i].substr(find + longestString.length(), str1List[i].length());
-				str1List[i] = newStrLeft;
-				str1List.push_back(newStrRight);
-			}
+	auto find = str1List[pos].find(longestString);
+	// If it's the whole string, remove the whole element
+	if (str1List[pos] == longestString) {
+		for (auto j = pos; j < str1List.size() - 1; j++) {
+			str1List[j] = str1List[j + 1];
 		}
+		str1List.pop_back();
+	}
+	// If it's in the begin
+	else if (find == 0) {
+		str1List[pos] = str1List[pos].substr(longestString.length(), longestString.length());
+	}
+	// If it's in the end
+	else if (find + longestString.length() == str1List[pos].length()) {
+		str1List[pos] = str1List[pos].substr(0, str1List[pos].length() - longestString.length());
+	}
+	// If it's in the middle
+	else {
+		// Break into two new elements
+		auto newStrLeft = str1List[pos].substr(0, find);
+		auto newStrRight = str1List[pos].substr(find + longestString.length(), str1List[pos].length());
+		str1List[pos] = newStrLeft;
+		str1List.push_back(newStrRight);
 	}
 }
 
