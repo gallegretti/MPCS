@@ -19,7 +19,7 @@ Options parseOptions(int argc, char *argv[])
 		{
 			options.seed = atoi(argv[i + 1]);
 		}
-		if (strcmp(argv[i], "-v") == 0)
+		if (strcmp(argv[i], "--verbose") == 0)
 		{
 			options.verbose = true;
 		}
@@ -29,9 +29,11 @@ Options parseOptions(int argc, char *argv[])
 
 void showHelp()
 {
-	std::cout << "input file" << std::endl;
-	std::cout << "-s seed : for the RNG" << std::endl;
-	std::cout << "-v : verbose log" << std::endl;
+	std::cout << "Usage: mpcs.exe <file> [options]\n" << std::endl;
+	std::cout << "For a <file> that has two related strings, one per line\n" << std::endl;
+	std::cout << "options:\n" << std::endl;
+	std::cout << "-s <seed>      Seed to be used in the RNG" << std::endl;
+	std::cout << "--verbose      Prints verbose log" << std::endl;
 }
 
 bool readStringsFromFile(char * file, std::string &string1, std::string &string2)
