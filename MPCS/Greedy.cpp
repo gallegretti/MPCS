@@ -6,6 +6,10 @@ Greedy::Greedy(std::string input1, std::string input2, int seed)
 	this->str1 = input1;
 	this->str2 = input2;
 	this->seed = seed;
+
+	if (!sameCharAmmount({str1}, {str2})) {
+		std::cout << "Invalid inputs";
+	}
 }
 
 Greedy::~Greedy()
@@ -23,6 +27,20 @@ std::vector<std::string> Greedy::nextSolution()
 	int str1LongestOverlapPos = 0;
 	int str2LongestOverlapPos = 0;
 	while (!str1List.empty()) {
+		std::cout << "New step:" << std::endl;
+		std::cout << "str1List:" << std::endl;
+		for (auto str : str1List) {
+			std::cout << str << std::endl;
+		}
+		std::cout << "\nstr2List:" << std::endl;
+		for (auto str : str2List) {
+			std::cout << str << std::endl;
+		}
+		std::cout << "\nresult:" << std::endl;
+		for (auto str : result) {
+			std::cout << str << std::endl;
+		}
+
 		std::string longestString = "";
 		// Find longest common string between the two sets
 		for (auto string1 = 0; string1 < str1List.size(); string1++) {
@@ -36,13 +54,47 @@ std::vector<std::string> Greedy::nextSolution()
 				}
 			}
 		}
+		std::cout << "\nLongest common string found is:" << std::endl;
+		std::cout << longestString << std::endl;
+		std::cout << "At str1:" << str1LongestOverlapPos << "And str2:" << str2LongestOverlapPos << std::endl;
+
 		result.push_back(longestString);
 
 		// Remove from the unmarked strings
 		removeString(longestString, str1List, str1LongestOverlapPos);
 		removeString(longestString, str2List, str2LongestOverlapPos);
+
+		// DEBUG: After removing the same string from two != lists, the chars should be equal
+		if (!sameCharAmmount(str1List, str2List)) {
+			std::cout << "invalid";
+		}
 	}
 	return result;
+}
+
+bool Greedy::sameCharAmmount(std::vector<std::string> list1, std::vector<std::string> list2)
+{
+	int a[256] = { 0 };
+	int b[256] = { 0 };
+
+	for (auto &str : list1) {
+		for (auto &character : str1) {
+			a[character]++;
+		}
+	}
+	for (auto &str : list2) {
+		for (auto &character : str2) {
+			b[character]++;
+		}
+	}
+
+	for (auto i = 0; i < 256; i++) {
+		if (a[i] != b[i]) {
+			return false;
+		}
+	}
+
+	return true;
 }
 
 
@@ -75,6 +127,8 @@ void Greedy::removeString(std::string & longestString, std::vector<std::string>&
 }
 
 
+
+
 // This is very bad
 std::string Greedy::longestOverlapSize(std::string &str1, std::string &str2)
 {
@@ -83,7 +137,7 @@ std::string Greedy::longestOverlapSize(std::string &str1, std::string &str2)
 	int k = 1;
 	std::string overlap, maxOverlap;
 	int overlapSize = 0;
-
+	//std::cout << "Longest overlapping for " << str1 << " and " << str2 << " is:" << std::endl;
 	for (i = 0; i < str1.size(); i++)
 	{
 		for (j = 0; j < str2.size(); j++)
@@ -106,6 +160,7 @@ std::string Greedy::longestOverlapSize(std::string &str1, std::string &str2)
 			overlap.clear();
 		}
 	}
+	//std::cout << maxOverlap << std::endl;
 	return maxOverlap;
 }
 

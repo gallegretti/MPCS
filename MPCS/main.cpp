@@ -59,42 +59,41 @@ bool readStringsFromFile(char * file, std::string &string1, std::string &string2
 
 int main(int argc, char *argv[])
 {
-	
-	if (argc < 2) {
-		showHelp();
-		return 0;
-	}
-
-	auto options = parseOptions(argc, argv);
-	std::string str1, str2;
-	auto success = readStringsFromFile(argv[1], str1, str2);
-	if (success == false)
-	{
-		std::cout << "Failed to read the input file" << std::endl;
-		return -1;
-	}
-	std::cout << "Running with the following strings:" << std::endl;
-	std::cout << str1 << std::endl;
-	std::cout << str2 << std::endl;
-	
-
 	/*
+		if (argc < 2) {
+			showHelp();
+			return 0;
+		}
+
+		auto options = parseOptions(argc, argv);
+		std::string str1, str2;
+		auto success = readStringsFromFile(argv[1], str1, str2);
+		if (success == false)
+		{
+			std::cout << "Failed to read the input file" << std::endl;
+			return -1;
+		}
+		std::cout << "Running with the following strings:" << std::endl;
+		std::cout << str1 << std::endl;
+		std::cout << str2 << std::endl;
+
+		*/
+
 	Options options;
 	options.seed = 0;
-	std::string str1 = "ttcccaagctcacattctcgggcgtctttactcacgttcggggaggtgcgtagtcgtttgaacctaaattaaaggtctcggcaacgagcgggacaagaatttgatcctcatcaa";
-	std::string str2 = "cgcagtaccatgcaggacaaattccttgacagacgttgtgggactccgcgcaatgtgattgtattaaattgacctcacgattaacagctcgagcgtatccggtgcgctctatgt";
-	*/
+	std::string str1 = "tctccacctcaagtctgactagtgcataaagcactgacgatgataccgggctagtatggttgtctgcctcaccaggaggaaggagttccccgtgttattaaggccattgtcaataagcagtcaattcttccgggagc";
+	std::string str2 = "agggtaccggaaagccttacctcgtgctacgctctacatagacccacgagcattcccttagtaattgataagatagtagagccgccgggatgctggtttcttggccgctcggtgattcgattccaatataatgagac";
+
 	auto greedyGenerator = Greedy(str1, str2, options.seed);
 
-	while (true)
-	{
-		auto longest = greedyGenerator.nextSolution();
-		for (auto &block : longest) {
-			std::cout << block;
-			std::cout << " - ";
-			std::cout << std::endl;
-		}
+
+	auto longest = greedyGenerator.nextSolution();
+	for (auto &block : longest) {
+		std::cout << block;
+		std::cout << " - ";
+		std::cout << std::endl;
 	}
+
 
 	return 0;
 }

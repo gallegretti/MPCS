@@ -19,6 +19,8 @@ public:
 	// Remove str from the vector of strings
 	void removeString(std::string &str, std::vector<std::string> &strVec1, int pos);
 
+	bool sameCharAmmount(std::vector<std::string> list1, std::vector<std::string> list2);
+
 private:
 	std::string str1;
 	std::string str2;
