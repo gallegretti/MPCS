@@ -87,6 +87,10 @@ int main(int argc, char *argv[])
 		std::cout << std::endl;
 	}
 
+	if ( !greedyGenerator.AreStringsRelated(longest, { str1 }) || !greedyGenerator.AreStringsRelated(longest, { str2 }) ) {
+		std::cout << "IF YOU'RE READING THIS, YOU FUCKED UP";
+	}
+
 	return 0;
 }
 

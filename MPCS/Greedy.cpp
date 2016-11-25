@@ -97,7 +97,7 @@ void Greedy::removeString(std::string & longestString, std::vector<std::string>&
 	else {
 		// Break into two new elements
 		auto newStrLeft = str1List[pos].substr(0, find);
-		auto newStrRight = str1List[pos].substr(find + longestString.length(), str1List[pos].length());
+		auto newStrRight = str1List[pos].substr(find + longestString.length(), std::string::npos);
 		str1List[pos] = newStrLeft;
 		str1List.push_back(newStrRight);
 	}
