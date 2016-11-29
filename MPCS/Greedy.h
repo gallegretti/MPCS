@@ -2,6 +2,7 @@
 #include <string>
 #include <iostream>
 #include "Solution.h"
+#include <stdlib.h>
 class Greedy
 {
 public:

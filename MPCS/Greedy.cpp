@@ -6,6 +6,7 @@ Greedy::Greedy(std::string input1, std::string input2, int seed)
 	this->str1 = input1;
 	this->str2 = input2;
 	this->seed = seed;
+	srand(seed);
 
 	if (!AreStringsRelated({str1}, {str2})) {
 		std::cout << "Invalid inputs";
