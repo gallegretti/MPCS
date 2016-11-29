@@ -5,7 +5,7 @@
 
 struct Options {
 	bool verbose;
-	int seed;
+	unsigned int seed;
 };
 
 Options parseOptions(int argc, char *argv[])
@@ -57,8 +57,19 @@ bool readStringsFromFile(char * file, std::string &string1, std::string &string2
 	return true;
 }
 
+std::string prettyString(std::vector<std::string> list)
+{
+	std::string out = "{ ";
+	for (auto &string : list) {
+		out += "\"" + string + "\",";
+	}
+	out += "}";
+	return out;
+}
+
 int main(int argc, char *argv[])
 {
+	std::string str1, str2;
 
 	if (argc < 2) {
 		showHelp();
@@ -66,26 +77,29 @@ int main(int argc, char *argv[])
 	}
 
 	auto options = parseOptions(argc, argv);
-	std::string str1, str2;
 	auto success = readStringsFromFile(argv[1], str1, str2);
 	if (success == false)
 	{
 		std::cout << "Failed to read the input file" << std::endl;
 		return -1;
 	}
-	std::cout << "Running with the following strings:" << std::endl;
-	std::cout << str1 << std::endl;
-	std::cout << str2 << std::endl;
+
+	if (options.verbose)
+	{
+		std::cout << "Inputs:" << std::endl;
+		std::cout << str1 << std::endl;
+		std::cout << str2 << std::endl;
+		std::cout << "Seed: " << options.seed << std::endl;
+	}
+
 
 	auto greedyGenerator = Greedy(str1, str2, options.seed);
 
 
+
 	auto longest = greedyGenerator.nextSolution();
-	for (auto &block : longest) {
-		std::cout << block;
-		std::cout << " - ";
-		std::cout << std::endl;
-	}
+	std::cout << prettyString(longest) << std::endl;
+	std::cout << "Size: " << longest.size();
 
 	if ( !greedyGenerator.AreStringsRelated(longest, { str1 }) || !greedyGenerator.AreStringsRelated(longest, { str2 }) ) {
 		std::cout << "IF YOU'RE READING THIS, YOU FUCKED UP";

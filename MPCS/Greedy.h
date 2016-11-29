@@ -6,14 +6,13 @@
 class Greedy
 {
 public:
-	Greedy::Greedy(std::string input1, std::string input2, int seed);
+	Greedy::Greedy(std::string input1, std::string input2, unsigned int seed);
 	~Greedy();
 
 	std::vector<std::string> nextSolution();
 
 
 public:
-	int seed;
 
 	std::string longestOverlapSize(std::string &str1, std::string &str2);
 
