@@ -14,7 +14,7 @@ public:
 
 public:
 
-	std::string longestOverlapSize(std::string &str1, std::string &str2);
+	std::vector<std::string> Greedy::commonStrings(const std::string &str1, const std::string &str2);
 
 	// Remove str from the vector of strings
 	void removeString(std::string &str, std::vector<std::string> &strVec1, int pos);

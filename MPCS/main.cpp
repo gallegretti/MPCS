@@ -57,7 +57,7 @@ bool readStringsFromFile(char * file, std::string &string1, std::string &string2
 	return true;
 }
 
-std::string prettyString(std::vector<std::string> list)
+std::string prettyString(const std::vector<std::string> &list)
 {
 	std::string out = "{ ";
 	for (auto &string : list) {
