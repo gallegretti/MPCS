@@ -148,11 +148,12 @@ stringOverlap
 
 std::vector<std::string> Greedy::commonStrings(const std::string &str1, const std::string &str2)
 {
+	const int arraySize = 1000;
 	int i = 0;
 	int j = 0;
 	int locationLongest[2] = {0, 0};
-	static int longestOverlap[500][500] = {};
-	static std::string stringOverlap[500][500] = {};
+	static int longestOverlap[arraySize][arraySize] = {};
+	static std::string stringOverlap[arraySize][arraySize] = {};
 	//std::vector<std::string> overlaps;
 	std::string secondBest;
 	std::string overlap, maxOverlap;
@@ -160,6 +161,15 @@ std::vector<std::string> Greedy::commonStrings(const std::string &str1, const st
 	//std::cout << "Longest overlapping for " << str1 << " and " << str2 << " is:" << std::endl;
 	//std::vector<std::vector<int>> longestOverlap(str1.size() + 1, std::vector<int>(str2.size() + 1));
 	//std::vector<std::vector<std::string>> stringOverlap(str1.size() + 1, std::vector<std::string>(str2.size() + 1));
+
+	for (i = 0; i < arraySize; i++)
+	{
+		for (j = 0; j < arraySize; j++)
+		{
+			longestOverlap[i][j] = 0;
+			stringOverlap[i][j].clear();
+		}
+	}
 
 	for (int i = 0; i <= str1.size(); i++)
 	{
@@ -184,7 +194,7 @@ std::vector<std::string> Greedy::commonStrings(const std::string &str1, const st
 	}
 
 	maxOverlap = stringOverlap[locationLongest[0]][locationLongest[1]];
-	std::cout << "Longest overlapping for " << str1 << " and " << str2 << " is: " << maxOverlap << " and size is " << overlapSize << std::endl;
+	//std::cout << "Longest overlapping for " << str1 << " and " << str2 << " is: " << maxOverlap << " and size is " << overlapSize << std::endl;
 
 	for (i = 0; i < overlapSize; i++)
 		longestOverlap[locationLongest[0] - i][locationLongest[1] - i] = 0;
@@ -204,7 +214,7 @@ std::vector<std::string> Greedy::commonStrings(const std::string &str1, const st
 	}
 
 	secondBest = stringOverlap[locationLongest[0]][locationLongest[1]];
-	std::cout << "Second best for " << str1 << " and " << str2 << " is: " << maxOverlap << " and size is " << overlapSize << std::endl;
+	//std::cout << "Second best for " << str1 << " and " << str2 << " is: " << maxOverlap << " and size is " << overlapSize << std::endl;
 
 	if (maxOverlap.size() == 0)
 	{
@@ -214,7 +224,7 @@ std::vector<std::string> Greedy::commonStrings(const std::string &str1, const st
 	{
 		return{ maxOverlap };
 	}
-	return { maxOverlap, secondBest };
+	return { maxOverlap, secondBest }; 
 }
 
 
