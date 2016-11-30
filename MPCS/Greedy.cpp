@@ -156,9 +156,8 @@ std::vector<std::string> Greedy::commonStrings(const std::string &str1, const st
 	std::string overlap, maxOverlap;
 	int overlapSize = 0;
 	//std::cout << "Longest overlapping for " << str1 << " and " << str2 << " is:" << std::endl;
-	std::vector<std::vector<int>> longestOverlap;
-	std::vector<std::vector<std::string>> stringOverlap;
-	bool newString = true;
+	std::vector<std::vector<int>> longestOverlap(str1.size(), std::vector<int>(str2.size()));
+	std::vector<std::vector<std::string>> stringOverlap(str1.size(), std::vector<std::string>(str2.size()));
 
 	for (int i = 0; i <= str1.size(); i++)
 	{
@@ -185,7 +184,6 @@ std::vector<std::string> Greedy::commonStrings(const std::string &str1, const st
 	//1. for i = 0 to overlapSize longestOverlap[locationLongest[0] - i][locationLongest[1] - i] = 0;
 	//2. Encontra nova localização do maior em longestOverlap;
 	//3. secondBest = stringOverlap[new][new];
-
 	if (maxOverlap.size() == 0)
 	{
 		return {};
