@@ -1,6 +1,7 @@
 #include "Greedy.h"
 #include <algorithm>
 
+
 Greedy::Greedy(std::string input1, std::string input2, unsigned int seed)
 {
 	this->str1 = input1;
@@ -10,6 +11,9 @@ Greedy::Greedy(std::string input1, std::string input2, unsigned int seed)
 	if (!AreStringsRelated({str1}, {str2})) {
 		std::cout << "Invalid inputs";
 	}
+
+	this->commonStrings();
+
 }
 
 Greedy::~Greedy()
@@ -18,54 +22,50 @@ Greedy::~Greedy()
 }
 
 
-std::vector<std::string> Greedy::nextSolution()
-{
-	std::vector <std::string> result;
-	// Remaining strings that need to match
-	std::vector <std::string> str1List = { str1 };
-	std::vector <std::string> str2List = { str2 };
-
+std::vector<std::string> Greedy::nextSolution() {
+	int i = 0;
+	int j = 0;
+	int locationLongest[2] = { 0, 0 };
+	int overlapSize = 0;
+	static int psCopy[1000][1000];
+	std::vector<std::string> stringPartitions;
 	
-	std::vector <std::string> common;
-	st selected;
+	for (i = 0; i < 1000; i++)
+		for (j = 0; j < 1000; j++) {
+			psCopy[i][j] = psMatrix[i][j];
+			if (psMatrix[i][j] > overlapSize) {
+				overlapSize = psMatrix[i][j];
+				locationLongest[0] = i;
+				locationLongest[1] = j;
+			}
+		}
 
-	while (!str1List.empty()) {
-		std::vector <st> candidates;
-		// Find where the common strings are
-		for (size_t string1 = 0; string1 < str1List.size(); string1++) {
-			for (size_t string2 = 0; string2 < str2List.size(); string2++) {
-				common = commonStrings(str1List[string1], str2List[string2]);
-				for (auto &str : common) {
-					candidates.push_back({ string1 , string2, str });
+
+	while (overlapSize) {
+		stringPartitions.push_back(partitionsMatrix[locationLongest[0]][locationLongest[1]]);
+		for (i = 0; i < overlapSize; i++)
+			for (j = 0; j < str2.size(); j++)
+				psMatrix[locationLongest[0] - i][j] = 0;
+		for (i = 0; i < str1.size(); i++)
+			for (j = 0; j < overlapSize; j++)
+				psMatrix[i][locationLongest[0] - j] = 0;
+		overlapSize = 0;
+		for (int i = 0; i <= str1.size(); i++)
+		{
+			for (int j = 0; j <= str2.size(); j++)
+			{
+				if (psMatrix[i][j] > overlapSize) {
+					if (assertComplete(i, j, psMatrix)) {
+						overlapSize = psMatrix[i][j];
+						locationLongest[0] = i;
+						locationLongest[1] = j;
+					}
+					else psMatrix[i][j] = 0;
 				}
 			}
 		}
-
-		// Select one
-		std::sort(candidates.begin(), candidates.end());
-		bool done = false;
-		for (auto &candidate : candidates)
-		{
-			if (rand() % 100 > 50)
-			{
-				selected = candidate;
-				done = true;
-				break;
-			}
-		}
-		if (!done)
-		{
-			selected = candidates[0];
-		}
-
-		result.push_back(selected.str);
-
-		// Remove from the unmarked strings
-		removeString(selected.str, str1List, selected.posVec1);
-		removeString(selected.str, str2List, selected.posVec2);
-		
 	}
-	return result;
+	return stringPartitions;
 }
 
 bool Greedy::AreStringsRelated(std::vector<std::string> list1, std::vector<std::string> list2)
@@ -124,50 +124,12 @@ void Greedy::removeString(std::string & longestString, std::vector<std::string>&
 }
 
 
-
-// This is new
-/*
-e.g
-EEABC
-EFABC
-longestOverlap
-0 0 0 0 0 0
-0 1 0 0 0 0
-0 1 0 0 0 0
-0 0 0 1 0 0
-0 0 0 0 2 0
-0 0 0 0 0 3
-stringOverlap
-- - - - - -
-- E - - - -
-- E - - - -
-- - - A - -
-- - - - AB-
-- - - - - ABC
-*/
-
-std::vector<std::string> Greedy::commonStrings(const std::string &str1, const std::string &str2)
+void Greedy::commonStrings()
 {
-	const int arraySize = 1000;	
 	int i = 0;
 	int j = 0;
 	int locationLongest[2] = {0, 0};
-	static int longestOverlap[arraySize][arraySize] = {};
-	static std::string stringOverlap[arraySize][arraySize] = {};
-	std::vector<std::string> stringPartitions;
-	std::string secondBest;
-	std::string overlap, maxOverlap;
 	int overlapSize = 0;
-
-	//Limpa array, não é necessário se só rodar função uma vez
-	for (i = 0; i < arraySize; i++)
-	{
-		for (j = 0; j < arraySize; j++)
-		{
-			longestOverlap[i][j] = 0;
-			stringOverlap[i][j].clear();
-		}
-	}
 
 	//Monta matriz completa de overlaps das duas strings
 	for (int i = 0; i <= str1.size(); i++)
@@ -175,84 +137,22 @@ std::vector<std::string> Greedy::commonStrings(const std::string &str1, const st
 		for (int j = 0; j <= str2.size(); j++)
 		{
 			if (i == 0 || j == 0) 
-				longestOverlap[i][j] = 0;
+				psMatrix[i][j] = 0;
 
 			else if (str1[i - 1] == str2[j - 1])
 			{
-				longestOverlap[i][j] = longestOverlap[i - 1][j - 1] + 1;
-				if (longestOverlap[i][j] > overlapSize) {
+				psMatrix[i][j] = psMatrix[i - 1][j - 1] + 1;
+				if (psMatrix[i][j] > overlapSize) {
 					locationLongest[0] = i;
 					locationLongest[1] = j;
 				}
-				overlapSize = std::max(overlapSize, longestOverlap[i][j]);
-				stringOverlap[i][j] = stringOverlap[i - 1][j - 1];
-				stringOverlap[i][j] += str1[i - 1];
+				overlapSize = std::max(overlapSize, psMatrix[i][j]);
+				partitionsMatrix[i][j] = partitionsMatrix[i - 1][j - 1];
+				partitionsMatrix[i][j] += str1[i - 1];
 			}
-			else longestOverlap[i][j] = 0;
+			else psMatrix[i][j] = 0;
 		}
 	}
-
-	//Laço que gera solução greedy completa
-	
-	while (overlapSize) {
-		stringPartitions.push_back(stringOverlap[locationLongest[0]][locationLongest[1]]);
-		for (i = 0; i < overlapSize; i++)
-			for (j = 0; j < str2.size(); j++)
-				longestOverlap[locationLongest[0] - i][j] = 0;
-		for (i = 0; i < str1.size(); i++)
-			for (j = 0; j < overlapSize; j++)
-				longestOverlap[i][locationLongest[0] - j] = 0;
-		overlapSize = 0;
-		for (int i = 0; i <= str1.size(); i++)
-		{
-			for (int j = 0; j <= str2.size(); j++)
-			{
-				if (longestOverlap[i][j] > overlapSize) {
-					if (assertComplete(i, j, longestOverlap)) {
-						overlapSize = longestOverlap[i][j];
-						locationLongest[0] = i;
-						locationLongest[1] = j;
-					}
-				}
-			}
-		}
-	}
-	
-
-	//Procedimentos para devolver duas maiores strings apenas
-	maxOverlap = stringOverlap[locationLongest[0]][locationLongest[1]];
-
-	//std::cout << "Longest overlapping for " << str1 << " and " << str2 << " is: " << maxOverlap << " and size is " << overlapSize << std::endl;
-
-	for (i = 0; i < overlapSize; i++)
-		longestOverlap[locationLongest[0] - i][locationLongest[1] - i] = 0;
-
-	overlapSize = 0;
-
-	for (int i = 0; i <= str1.size(); i++)
-	{
-		for (int j = 0; j <= str2.size(); j++)
-		{
-			if (longestOverlap[i][j] > overlapSize) {
-				overlapSize = longestOverlap[i][j];
-				locationLongest[0] = i;
-				locationLongest[1] = j;
-			}
-		}
-	}
-
-	secondBest = stringOverlap[locationLongest[0]][locationLongest[1]];
-	//std::cout << "Second best for " << str1 << " and " << str2 << " is: " << maxOverlap << " and size is " << overlapSize << std::endl;
-
-	if (maxOverlap.size() == 0)
-	{
-		return {};
-	}
-	if (secondBest.size() == 0)
-	{
-		return{ maxOverlap };
-	}
-	return { maxOverlap, secondBest }; 
 }
 
  
@@ -264,85 +164,3 @@ bool Greedy::assertComplete(int i, int j, int overlapArray[1000][1000]) {
 	else
 		return false;
 }
-
-
-/*
-std::vector<std::string> Greedy::commonStrings(const std::string &str1, const std::string &str2)
-{
-	int i = 0;
-	int j = 0;
-	int k = 1;
-	//std::vector<std::string> overlaps;
-	std::string secondBest;
-	std::string overlap, maxOverlap;
-	int overlapSize = 0;
-	//std::cout << "Longest overlapping for " << str1 << " and " << str2 << " is:" << std::endl;
-	for (i = 0; i < str1.size(); i++) {
-		for (j = 0; j < str2.size(); j++) {
-			for (k = 1; k <= str1.size() && k <= str2.size(); k++) {
-				if (str1.substr(i, k) == str2.substr(j, k)) {
-					overlap = str1.substr(i, k);
-				} else {
-					if (overlap.size() > maxOverlap.size()) {
-						secondBest = maxOverlap;
-						maxOverlap = overlap;
-					}
-					overlap.clear();
-				}
-			}
-			if (overlap.size() > maxOverlap.size()) {
-				secondBest = maxOverlap;
-				maxOverlap = overlap;
-			}
-			overlap.clear();
-		}
-	}
-	std::cout << "Longest overlapping for " << str1 << " and " << str2 << " is: " << maxOverlap << std::endl;
-	if (maxOverlap.size() == 0)
-	{
-		return {};
-	}
-
-	if (secondBest.size() == 0) {
-		return{ maxOverlap };
-	}
-	return { maxOverlap, secondBest };
-}
-*/
-
-
-
-/*	{
-		int i = 0;
-		int j = 0;
-		int k = 1;
-		std::string overlap, maxOverlap;
-		int overlapSize = 0;
-
-
-		for (i = 0; i < str1.size(); i++)
-		{
-			for (j = 0; j < str2.size(); j++)
-			{
-				for (k = 1; k <= str1.size() && k <= str2.size(); k++)
-				{
-					if (str1.substr(i, k) == str2.substr(j, k))
-					{
-						overlap = str1.substr(i, k);
-					}
-					else
-					{
-						if (overlap.size() > maxOverlap.size())
-							maxOverlap = overlap;
-						overlap.clear();
-					}
-				}
-				if (overlap.size() > maxOverlap.size())
-					maxOverlap = overlap;
-				overlap.clear();
-			}
-		}
-		//overlapSize = maxOverlap.size();
-
-		return maxOverlap;
-		}*/

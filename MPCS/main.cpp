@@ -92,10 +92,7 @@ int main(int argc, char *argv[])
 		std::cout << "Seed: " << options.seed << std::endl;
 	}
 
-
 	auto greedyGenerator = Greedy(str1, str2, options.seed);
-
-
 
 	auto longest = greedyGenerator.nextSolution();
 	std::cout << prettyString(longest) << std::endl;

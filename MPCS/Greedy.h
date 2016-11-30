@@ -4,8 +4,10 @@
 #include "Solution.h"
 #include <algorithm>
 #include <stdlib.h>
+
 class Greedy
 {
+
 public:
 	Greedy::Greedy(std::string input1, std::string input2, unsigned int seed);
 	~Greedy();
@@ -15,7 +17,7 @@ public:
 
 public:
 
-	std::vector<std::string> Greedy::commonStrings(const std::string &str1, const std::string &str2);
+	void Greedy::commonStrings();
 
 	bool Greedy::assertComplete(int i, int j, int overlapArray[1000][1000]);
 
@@ -44,5 +46,7 @@ public:
 private:
 	std::string str1;
 	std::string str2;
+	int psMatrix[1000][1000];
+	std::string partitionsMatrix[1000][1000];
 };
 
