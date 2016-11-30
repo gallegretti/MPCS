@@ -193,27 +193,31 @@ std::vector<std::string> Greedy::commonStrings(const std::string &str1, const st
 	}
 
 	//Laço que gera solução greedy completa
-	/*
+	
 	while (overlapSize) {
 		stringPartitions.push_back(stringOverlap[locationLongest[0]][locationLongest[1]]);
 		for (i = 0; i < overlapSize; i++)
+			for (j = 0; j < str2.size(); j++)
+				longestOverlap[locationLongest[0] - i][j] = 0;
+		for (i = 0; i < str1.size(); i++)
 			for (j = 0; j < overlapSize; j++)
-				longestOverlap[locationLongest[0] - i][locationLongest[1] - j] = 0;
+				longestOverlap[i][locationLongest[0] - j] = 0;
 		overlapSize = 0;
 		for (int i = 0; i <= str1.size(); i++)
 		{
 			for (int j = 0; j <= str2.size(); j++)
 			{
 				if (longestOverlap[i][j] > overlapSize) {
-					assertComplete(i, j, longestOverlap);
-					overlapSize = longestOverlap[i][j];
-					locationLongest[0] = i;
-					locationLongest[1] = j;
+					if (assertComplete(i, j, longestOverlap)) {
+						overlapSize = longestOverlap[i][j];
+						locationLongest[0] = i;
+						locationLongest[1] = j;
+					}
 				}
 			}
 		}
 	}
-	*/
+	
 
 	//Procedimentos para devolver duas maiores strings apenas
 	maxOverlap = stringOverlap[locationLongest[0]][locationLongest[1]];
@@ -251,7 +255,7 @@ std::vector<std::string> Greedy::commonStrings(const std::string &str1, const st
 	return { maxOverlap, secondBest }; 
 }
 
-/* 
+ 
 bool Greedy::assertComplete(int i, int j, int overlapArray[1000][1000]) {
 	if (overlapArray[i][j] == 1)
 		return true;
@@ -260,7 +264,7 @@ bool Greedy::assertComplete(int i, int j, int overlapArray[1000][1000]) {
 	else
 		return false;
 }
-*/
+
 
 /*
 std::vector<std::string> Greedy::commonStrings(const std::string &str1, const std::string &str2)
