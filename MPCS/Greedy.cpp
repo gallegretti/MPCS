@@ -145,13 +145,14 @@ stringOverlap
 - - - - AB-
 - - - - - ABC
 */
+
 std::vector<std::string> Greedy::commonStrings(const std::string &str1, const std::string &str2)
 {
 	int i = 0;
 	int j = 0;
-	int locationLongest[2];
-	int longestOverlap[100][100] = {};
-	std::string stringOverlap[100][100] = {};
+	int locationLongest[2] = {0, 0};
+	static int longestOverlap[500][500] = {};
+	static std::string stringOverlap[500][500] = {};
 	//std::vector<std::string> overlaps;
 	std::string secondBest;
 	std::string overlap, maxOverlap;
@@ -184,78 +185,84 @@ std::vector<std::string> Greedy::commonStrings(const std::string &str1, const st
 
 	maxOverlap = stringOverlap[locationLongest[0]][locationLongest[1]];
 	std::cout << "Longest overlapping for " << str1 << " and " << str2 << " is: " << maxOverlap << " and size is " << overlapSize << std::endl;
-	//Acho que tem uma forma melhor, mas um jeito de conseguir os consecutivos maiores strings seria:
-	//1. for i = 0 to overlapSize longestOverlap[locationLongest[0] - i][locationLongest[1] - i] = 0;
-	//2. Encontra nova localização do maior em longestOverlap;
-	//3. secondBest = stringOverlap[new][new];
-	/*if (maxOverlap.size() == 0)
+
+	for (i = 0; i < overlapSize; i++)
+		longestOverlap[locationLongest[0] - i][locationLongest[1] - i] = 0;
+
+	overlapSize = 0;
+
+	for (int i = 0; i <= str1.size(); i++)
+	{
+		for (int j = 0; j <= str2.size(); j++)
+		{
+			if (longestOverlap[i][j] > overlapSize) {
+				overlapSize = longestOverlap[i][j];
+				locationLongest[0] = i;
+				locationLongest[1] = j;
+			}
+		}
+	}
+
+	secondBest = stringOverlap[locationLongest[0]][locationLongest[1]];
+	std::cout << "Second best for " << str1 << " and " << str2 << " is: " << maxOverlap << " and size is " << overlapSize << std::endl;
+
+	if (maxOverlap.size() == 0)
 	{
 		return {};
 	}
-
 	if (secondBest.size() == 0)
 	{
 		return{ maxOverlap };
 	}
 	return { maxOverlap, secondBest };
-	*/
-	return{ maxOverlap };
 }
 
 
 /*
 std::vector<std::string> Greedy::commonStrings(const std::string &str1, const std::string &str2)
 {
-int i = 0;
-int j = 0;
-int k = 1;
-//std::vector<std::string> overlaps;
-std::string secondBest;
-std::string overlap, maxOverlap;
-int overlapSize = 0;
-//std::cout << "Longest overlapping for " << str1 << " and " << str2 << " is:" << std::endl;
-for (i = 0; i < str1.size(); i++)
-{
-for (j = 0; j < str2.size(); j++)
-{
-for (k = 1; k <= str1.size() && k <= str2.size(); k++)
-{
-if (str1.substr(i, k) == str2.substr(j, k))
-{
-overlap = str1.substr(i, k);
-}
-else
-{
-if (overlap.size() > maxOverlap.size())
-{
-secondBest = maxOverlap;
-maxOverlap = overlap;
-}
-overlap.clear();
-}
-}
-if (overlap.size() > maxOverlap.size())
-{
-secondBest = maxOverlap;
-maxOverlap = overlap;
-}
-overlap.clear();
-}
-}
-if (maxOverlap.size() == 0)
-{
-return {};
-}
+	int i = 0;
+	int j = 0;
+	int k = 1;
+	//std::vector<std::string> overlaps;
+	std::string secondBest;
+	std::string overlap, maxOverlap;
+	int overlapSize = 0;
+	//std::cout << "Longest overlapping for " << str1 << " and " << str2 << " is:" << std::endl;
+	for (i = 0; i < str1.size(); i++) {
+		for (j = 0; j < str2.size(); j++) {
+			for (k = 1; k <= str1.size() && k <= str2.size(); k++) {
+				if (str1.substr(i, k) == str2.substr(j, k)) {
+					overlap = str1.substr(i, k);
+				} else {
+					if (overlap.size() > maxOverlap.size()) {
+						secondBest = maxOverlap;
+						maxOverlap = overlap;
+					}
+					overlap.clear();
+				}
+			}
+			if (overlap.size() > maxOverlap.size()) {
+				secondBest = maxOverlap;
+				maxOverlap = overlap;
+			}
+			overlap.clear();
+		}
+	}
+	std::cout << "Longest overlapping for " << str1 << " and " << str2 << " is: " << maxOverlap << std::endl;
+	if (maxOverlap.size() == 0)
+	{
+		return {};
+	}
 
-if (secondBest.size() == 0)
-{
-return{ maxOverlap };
+	if (secondBest.size() == 0) {
+		return{ maxOverlap };
+	}
+	return { maxOverlap, secondBest };
 }
-return { maxOverlap, secondBest };
-}
-
-
 */
+
+
 
 /*	{
 		int i = 0;
