@@ -17,6 +17,8 @@ public:
 
 	std::vector<std::string> Greedy::commonStrings(const std::string &str1, const std::string &str2);
 
+	// bool Greedy::assertComplete(int i, int j, int overlapArray[1000][1000]);
+
 	// Remove str from the vector of strings
 	void removeString(std::string &str, std::vector<std::string> &strVec1, int pos);
 

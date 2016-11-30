@@ -148,20 +148,18 @@ stringOverlap
 
 std::vector<std::string> Greedy::commonStrings(const std::string &str1, const std::string &str2)
 {
-	const int arraySize = 1000;
+	const int arraySize = 1000;	
 	int i = 0;
 	int j = 0;
 	int locationLongest[2] = {0, 0};
 	static int longestOverlap[arraySize][arraySize] = {};
 	static std::string stringOverlap[arraySize][arraySize] = {};
-	//std::vector<std::string> overlaps;
+	std::vector<std::string> stringPartitions;
 	std::string secondBest;
 	std::string overlap, maxOverlap;
 	int overlapSize = 0;
-	//std::cout << "Longest overlapping for " << str1 << " and " << str2 << " is:" << std::endl;
-	//std::vector<std::vector<int>> longestOverlap(str1.size() + 1, std::vector<int>(str2.size() + 1));
-	//std::vector<std::vector<std::string>> stringOverlap(str1.size() + 1, std::vector<std::string>(str2.size() + 1));
 
+	//Limpa array, não é necessário se só rodar função uma vez
 	for (i = 0; i < arraySize; i++)
 	{
 		for (j = 0; j < arraySize; j++)
@@ -171,6 +169,7 @@ std::vector<std::string> Greedy::commonStrings(const std::string &str1, const st
 		}
 	}
 
+	//Monta matriz completa de overlaps das duas strings
 	for (int i = 0; i <= str1.size(); i++)
 	{
 		for (int j = 0; j <= str2.size(); j++)
@@ -193,7 +192,32 @@ std::vector<std::string> Greedy::commonStrings(const std::string &str1, const st
 		}
 	}
 
+	//Laço que gera solução greedy completa
+	/*
+	while (overlapSize) {
+		stringPartitions.push_back(stringOverlap[locationLongest[0]][locationLongest[1]]);
+		for (i = 0; i < overlapSize; i++)
+			for (j = 0; j < overlapSize; j++)
+				longestOverlap[locationLongest[0] - i][locationLongest[1] - j] = 0;
+		overlapSize = 0;
+		for (int i = 0; i <= str1.size(); i++)
+		{
+			for (int j = 0; j <= str2.size(); j++)
+			{
+				if (longestOverlap[i][j] > overlapSize) {
+					assertComplete(i, j, longestOverlap);
+					overlapSize = longestOverlap[i][j];
+					locationLongest[0] = i;
+					locationLongest[1] = j;
+				}
+			}
+		}
+	}
+	*/
+
+	//Procedimentos para devolver duas maiores strings apenas
 	maxOverlap = stringOverlap[locationLongest[0]][locationLongest[1]];
+
 	//std::cout << "Longest overlapping for " << str1 << " and " << str2 << " is: " << maxOverlap << " and size is " << overlapSize << std::endl;
 
 	for (i = 0; i < overlapSize; i++)
@@ -227,6 +251,16 @@ std::vector<std::string> Greedy::commonStrings(const std::string &str1, const st
 	return { maxOverlap, secondBest }; 
 }
 
+/* 
+bool Greedy::assertComplete(int i, int j, int overlapArray[1000][1000]) {
+	if (overlapArray[i][j] == 1)
+		return true;
+	else if (overlapArray[i - 1][j - 1] == (overlapArray[i][j] - 1))
+		return assertComplete(i - 1, j - 1, overlapArray);
+	else
+		return false;
+}
+*/
 
 /*
 std::vector<std::string> Greedy::commonStrings(const std::string &str1, const std::string &str2)
