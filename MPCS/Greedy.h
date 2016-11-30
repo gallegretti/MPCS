@@ -21,7 +21,9 @@ public:
 
 	void Greedy::commonStrings();
 
-	bool Greedy::assertComplete(int i, int j, int overlapArray[1000][1000]);
+	bool Greedy::assertCorrect(int i, int j, int (&overlapArray)[1000][1000], std::string(&stringArray)[1000][1000]);
+
+	void Greedy::correctMatrix(int i, int j, int(&overlapArray)[1000][1000], std::string(&stringArray)[1000][1000]);
 
 	// Remove str from the vector of strings
 	void removeString(std::string &str, std::vector<std::string> &strVec1, int pos);

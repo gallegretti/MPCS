@@ -27,34 +27,37 @@ std::vector<std::string> Greedy::nextSolution() {
 	int j = 0;
 	int locationLongest[2] = { 0, 0 };
 	int overlapSize = 0;
-	static int psCopy[1000][1000];
+	int psCopy[1000][1000];
+	std::string stringCopy[1000][1000];
 	std::vector<std::string> stringPartitions;
 	
 	for (i = 0; i < 1000; i++)
 		for (j = 0; j < 1000; j++) {
 			psCopy[i][j] = psMatrix[i][j];
-			if (psMatrix[i][j] > overlapSize) {
-				overlapSize = psMatrix[i][j];
+			stringCopy[i][j] = partitionsMatrix[i][j];
+			if (psCopy[i][j] > overlapSize) {
+				overlapSize = psCopy[i][j];
 				locationLongest[0] = i;
 				locationLongest[1] = j;
 			}
 		}
 
 	std::cout << "nextSolution reporting: 1st part is done!!" << std::endl;
+	std::cout << "nextSolution reporting: " << stringCopy[locationLongest[0]][locationLongest[1]] << std::endl;
 
 	while (overlapSize) {
 
 		std::cout << "nextSolution reporting: Entering while!!" << std::endl;
 
-		stringPartitions.push_back(partitionsMatrix[locationLongest[0]][locationLongest[1]]);
+		stringPartitions.push_back(stringCopy[locationLongest[0]][locationLongest[1]]);
 
 		for (i = 0; i < overlapSize; i++)
 			for (j = 0; j <= str2.size(); j++)
-				psMatrix[locationLongest[0] - i][j] = 0;
+				psCopy[locationLongest[0] - i][j] = 0;
 
 		for (i = 0; i <= str1.size(); i++)
 			for (j = 0; j < overlapSize; j++)
-				psMatrix[i][locationLongest[0] - j] = 0;
+				psCopy[i][locationLongest[0] - j] = 0;
 
 		overlapSize = 0;
 
@@ -62,17 +65,19 @@ std::vector<std::string> Greedy::nextSolution() {
 		{
 			for (int j = 0; j <= str2.size(); j++)
 			{
-				if (psMatrix[i][j] > overlapSize) {
-					if (assertComplete(i, j, psMatrix)) {
-						overlapSize = psMatrix[i][j];
+				if (psCopy[i][j] > overlapSize) {
+					std::cout << "nextSolution reporting: oldValue: " << psCopy[i][j] << std::endl;
+					assertCorrect(i, j, psCopy, stringCopy);
+					std::cout << "nextSolution reporting: newValue: " << psCopy[i][j] << std::endl;
+					if (psCopy[i][j] > overlapSize) {
+						overlapSize = psCopy[i][j];
 						locationLongest[0] = i;
 						locationLongest[1] = j;
 					}
-					else psMatrix[i][j] = 0;
 				}
 			}
 		}
-		std::cout << "nextSolution reporting: " << partitionsMatrix[locationLongest[0]][locationLongest[1]] << std::endl;
+		std::cout << "nextSolution reporting: " << stringCopy[locationLongest[0]][locationLongest[1]] << std::endl;
 	}
 	std::cout << "nextSolution reporting: 2nd part is done!!" << std::endl;
 	return stringPartitions;
@@ -168,11 +173,25 @@ void Greedy::commonStrings()
 }
 
  
-bool Greedy::assertComplete(int i, int j, int overlapArray[1000][1000]) {
+bool Greedy::assertCorrect(int i, int j, int (&overlapArray)[1000][1000], std::string(&stringArray)[1000][1000]) {
 	if (overlapArray[i][j] == 1)
 		return true;
-	else if (overlapArray[i - 1][j - 1] == (overlapArray[i][j] - 1))
-		return assertComplete(i - 1, j - 1, overlapArray);
-	else
-		return false;
+	else if (overlapArray[i - 1][j - 1] == (overlapArray[i][j] - 1)) 
+		return assertCorrect(i - 1, j - 1, overlapArray, stringArray);
+	else {
+		correctMatrix(i, j, overlapArray, stringArray);
+		return true;
+	}
+}
+
+void Greedy::correctMatrix(int i, int j, int(&overlapArray)[1000][1000], std::string(&stringArray)[1000][1000]) {
+	if (overlapArray[i][j] > 0) {
+		overlapArray[i][j] = overlapArray[i - 1][j - 1] + 1;
+		stringArray[i][j] = stringArray[i][j].substr(stringArray[i][j].size() - overlapArray[i][j], -1);
+		correctMatrix(i + 1, j + 1, overlapArray, stringArray);
+	}
+	else {
+		std::cout << "nextSolution reporting: Correcting Matrix! " << std::endl;
+	}
+
 }
