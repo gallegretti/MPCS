@@ -40,17 +40,24 @@ std::vector<std::string> Greedy::nextSolution() {
 			}
 		}
 
-	std::cout << "nextSolution reporting: 1st part is done!!";
+	std::cout << "nextSolution reporting: 1st part is done!!" << std::endl;
 
 	while (overlapSize) {
+
+		std::cout << "nextSolution reporting: Entering while!!" << std::endl;
+
 		stringPartitions.push_back(partitionsMatrix[locationLongest[0]][locationLongest[1]]);
+
 		for (i = 0; i < overlapSize; i++)
-			for (j = 0; j < str2.size(); j++)
+			for (j = 0; j <= str2.size(); j++)
 				psMatrix[locationLongest[0] - i][j] = 0;
-		for (i = 0; i < str1.size(); i++)
+
+		for (i = 0; i <= str1.size(); i++)
 			for (j = 0; j < overlapSize; j++)
 				psMatrix[i][locationLongest[0] - j] = 0;
+
 		overlapSize = 0;
+
 		for (int i = 0; i <= str1.size(); i++)
 		{
 			for (int j = 0; j <= str2.size(); j++)
@@ -65,7 +72,7 @@ std::vector<std::string> Greedy::nextSolution() {
 				}
 			}
 		}
-		std::cout << "nextSolution reporting: iteration!!" << std::endl;
+		std::cout << "nextSolution reporting: " << partitionsMatrix[locationLongest[0]][locationLongest[1]] << std::endl;
 	}
 	std::cout << "nextSolution reporting: 2nd part is done!!" << std::endl;
 	return stringPartitions;
