@@ -40,6 +40,7 @@ std::vector<std::string> Greedy::nextSolution() {
 			}
 		}
 
+	std::cout << "nextSolution reporting: 1st part is done!!";
 
 	while (overlapSize) {
 		stringPartitions.push_back(partitionsMatrix[locationLongest[0]][locationLongest[1]]);
@@ -64,7 +65,9 @@ std::vector<std::string> Greedy::nextSolution() {
 				}
 			}
 		}
+		std::cout << "nextSolution reporting: iteration!!" << std::endl;
 	}
+	std::cout << "nextSolution reporting: 2nd part is done!!" << std::endl;
 	return stringPartitions;
 }
 
@@ -153,6 +156,8 @@ void Greedy::commonStrings()
 			else psMatrix[i][j] = 0;
 		}
 	}
+
+	std::cout << "commonStrings reporting: I fulfilled my job!!" << std::endl;
 }
 
  

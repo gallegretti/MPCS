@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <stdlib.h>
 
+
+
 class Greedy
 {
 
