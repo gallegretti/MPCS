@@ -65,9 +65,9 @@ std::vector<std::string> Greedy::nextSolution() {
 			for (int j = 0; j <= str2.size(); j++)
 			{	
 				if (firstFlag) {
-					if (psCopy[i][j] >= overlapSize) {
+					if (psCopy[i][j] > overlapSize) {
 						assertCorrect(i, j, psCopy, stringCopy);
-						if (psCopy[i][j] >= overlapSize) {
+						if (psCopy[i][j] > overlapSize) {
 							overlapSize = psCopy[i][j];
 							locationLongest[0] = i;
 							locationLongest[1] = j;
@@ -76,9 +76,9 @@ std::vector<std::string> Greedy::nextSolution() {
 					}
 				}
 				else if (rand() % 2 == 1) {
-					if (psCopy[i][j] >= overlapSize) {
+					if (psCopy[i][j] > overlapSize) {
 						assertCorrect(i, j, psCopy, stringCopy);
-						if (psCopy[i][j] >= overlapSize) {
+						if (psCopy[i][j] > overlapSize) {
 							overlapSize = psCopy[i][j];
 							locationLongest[0] = i;
 							locationLongest[1] = j;
