@@ -67,10 +67,26 @@ std::string prettyString(const std::vector<std::string> &list)
 	return out;
 }
 
+std::vector<std::string> toVector(int(&commonStrings)[1000][1000], bool(&selected)[1000][1000], std::string str1, std::string str2) 
+{
+	std::vector<std::string> result;
+	for (auto i = 0; i < str1.length() + 1; i++)
+		for (auto j = 0; j < str2.length() + 1; j++) 
+		{
+			if (selected[i][j]) {
+				auto value = commonStrings[i][j];
+				result.push_back(str1.substr(j - value + 1, value - 1));
+				std::cout << "i:" << i << "j:" << j << " value:" << value << " result:" <<prettyString(result) << std::endl;
+			}
+		}
+	return result;
+}
+
 int main(int argc, char *argv[])
 {
 	std::string str1, str2;
-
+	bool selected[1000][1000] = { false };
+	/*
 	if (argc < 2) {
 		showHelp();
 		return 0;
@@ -91,22 +107,52 @@ int main(int argc, char *argv[])
 		std::cout << str2 << std::endl;
 		std::cout << "Seed: " << options.seed << std::endl;
 	}
+	*/
+	str2 = "abcdabce";
+	str1 = "eabcdabc";
 
 	std::vector<std::string> best;
-	auto greedyGenerator = Greedy(str1, str2, options.seed);
-	best = greedyGenerator.nextSolution();
-	for (auto i = 0; i < 1000; i++)
-	{
-		auto instance = greedyGenerator.nextSolution();
-		// TODO: local search 
+	auto greedyGenerator = Greedy(str1, str2, 1);
 
-		if (instance.size() < best.size())
+	/*
+	// Procura o maior bloco
+	int biggest = 0;
+	int biggest_i;
+	int biggest_j;
+	for (auto i = 0; i < str1.length(); i++)
+		for (auto j = 0; j < str2.length(); j++)
+		{
+			if (selected[i][j] == true)
+			{
+				if (greedyGenerator.psMatrix[i][j] > biggest)
+				{
+					biggest = greedyGenerator.psMatrix[i][j];
+					biggest_i = i;
+					biggest_j = j;
+				}
+			}
+		}
+		// Desmarca ele
+
+	*/
+	for (auto i = 0; i < 1; i++)
+	{
+		//auto instance = greedyGenerator.nextSolution();
+		// TODO: local search 
+		// Procura o maior bloco
+		// Desmarca
+		// 
+		for (auto i = 0; i < str1.length() + 1; i++)
+			for (auto j = 0; j < str2.length() + 1; j++)
+				selected[i][j] = false;
+		greedyGenerator.nextSolution(selected);
+		auto instance = toVector(greedyGenerator.psMatrix, selected, str1, str2);
+		if (instance.size() < best.size() || best.size() == 0)
 		{
 			best = instance;
 			std::cout << prettyString(best) << std::endl;
 			std::cout << "Size: " << best.size();
 		}
-
 	}
 
 	std::cout << prettyString(best) << std::endl;
