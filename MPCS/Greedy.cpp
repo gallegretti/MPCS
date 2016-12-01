@@ -28,6 +28,7 @@ std::vector<std::string> Greedy::nextSolution() {
 	int locationLongest[2] = { 0, 0 };
 	int overlapSize = 0;
 	int psCopy[1000][1000];
+	bool firstFlag = true;
 	std::string stringCopy[1000][1000];
 	std::vector<std::string> stringPartitions;
 	
@@ -58,17 +59,30 @@ std::vector<std::string> Greedy::nextSolution() {
 				psCopy[i][locationLongest[1] - j] = 0;
 
 		overlapSize = 0;
-
+		firstFlag = true;
 		for (int i = 0; i <= str1.size(); i++)
 		{
 			for (int j = 0; j <= str2.size(); j++)
-			{
-				if (psCopy[i][j] > overlapSize) {
-					assertCorrect(i, j, psCopy, stringCopy);
-					if (psCopy[i][j] > overlapSize) {
-						overlapSize = psCopy[i][j];
-						locationLongest[0] = i;
-						locationLongest[1] = j;
+			{	
+				if (firstFlag) {
+					if (psCopy[i][j] >= overlapSize) {
+						assertCorrect(i, j, psCopy, stringCopy);
+						if (psCopy[i][j] >= overlapSize) {
+							overlapSize = psCopy[i][j];
+							locationLongest[0] = i;
+							locationLongest[1] = j;
+							firstFlag = false;
+						}
+					}
+				}
+				else if (rand() % 2 == 1) {
+					if (psCopy[i][j] >= overlapSize) {
+						assertCorrect(i, j, psCopy, stringCopy);
+						if (psCopy[i][j] >= overlapSize) {
+							overlapSize = psCopy[i][j];
+							locationLongest[0] = i;
+							locationLongest[1] = j;
+						}
 					}
 				}
 			}
