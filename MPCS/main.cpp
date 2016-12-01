@@ -92,15 +92,30 @@ int main(int argc, char *argv[])
 		std::cout << "Seed: " << options.seed << std::endl;
 	}
 
+	std::vector<std::string> best;
 	auto greedyGenerator = Greedy(str1, str2, options.seed);
+	best = greedyGenerator.nextSolution();
+	for (auto i = 0; i < 1000; i++)
+	{
+		auto instance = greedyGenerator.nextSolution();
+		// TODO: local search 
 
-	auto longest = greedyGenerator.nextSolution();
-	std::cout << prettyString(longest) << std::endl;
-	std::cout << "Size: " << longest.size();
+		if (instance.size() < best.size())
+		{
+			best = instance;
+			std::cout << prettyString(best) << std::endl;
+			std::cout << "Size: " << best.size();
+		}
 
-	if ( !greedyGenerator.AreStringsRelated(longest, { str1 }) || !greedyGenerator.AreStringsRelated(longest, { str2 }) ) {
+	}
+
+	std::cout << prettyString(best) << std::endl;
+	std::cout << "Size: " << best.size();
+	
+	if ( !greedyGenerator.AreStringsRelated(best, { str1 }) || !greedyGenerator.AreStringsRelated(best, { str2 }) ) {
 		std::cout << "IF YOU'RE READING THIS, YOU FUCKED UP";
 	}
+	
 
 	return 0;
 }
