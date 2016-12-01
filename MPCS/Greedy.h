@@ -25,9 +25,6 @@ public:
 
 	void Greedy::correctMatrix(int i, int j, int(&overlapArray)[1000][1000], std::string(&stringArray)[1000][1000]);
 
-	// Remove str from the vector of strings
-	void removeString(std::string &str, std::vector<std::string> &strVec1, int pos);
-
 	bool AreStringsRelated(std::vector<std::string> list1, std::vector<std::string> list2);
 
 	struct st

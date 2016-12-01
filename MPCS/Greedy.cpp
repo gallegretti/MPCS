@@ -47,8 +47,6 @@ std::vector<std::string> Greedy::nextSolution() {
 
 	while (overlapSize) {
 
-		std::cout << "nextSolution reporting: Entering while!!" << std::endl;
-
 		stringPartitions.push_back(stringCopy[locationLongest[0]][locationLongest[1]]);
 
 		for (i = 0; i < overlapSize; i++)
@@ -57,7 +55,7 @@ std::vector<std::string> Greedy::nextSolution() {
 
 		for (i = 0; i <= str1.size(); i++)
 			for (j = 0; j < overlapSize; j++)
-				psCopy[i][locationLongest[0] - j] = 0;
+				psCopy[i][locationLongest[1] - j] = 0;
 
 		overlapSize = 0;
 
@@ -66,9 +64,7 @@ std::vector<std::string> Greedy::nextSolution() {
 			for (int j = 0; j <= str2.size(); j++)
 			{
 				if (psCopy[i][j] > overlapSize) {
-					std::cout << "nextSolution reporting: oldValue: " << psCopy[i][j] << std::endl;
 					assertCorrect(i, j, psCopy, stringCopy);
-					std::cout << "nextSolution reporting: newValue: " << psCopy[i][j] << std::endl;
 					if (psCopy[i][j] > overlapSize) {
 						overlapSize = psCopy[i][j];
 						locationLongest[0] = i;
@@ -77,7 +73,6 @@ std::vector<std::string> Greedy::nextSolution() {
 				}
 			}
 		}
-		std::cout << "nextSolution reporting: " << stringCopy[locationLongest[0]][locationLongest[1]] << std::endl;
 	}
 	std::cout << "nextSolution reporting: 2nd part is done!!" << std::endl;
 	return stringPartitions;
@@ -106,36 +101,6 @@ bool Greedy::AreStringsRelated(std::vector<std::string> list1, std::vector<std::
 	}
 
 	return true;
-}
-
-
-
-void Greedy::removeString(std::string & longestString, std::vector<std::string>& str1List, int pos)
-{
-	auto find = str1List[pos].find(longestString);
-	// If it's the whole string, remove the whole element
-	if (str1List[pos] == longestString) {
-		for (size_t j = pos; j < str1List.size() - 1; j++) {
-			str1List[j] = str1List[j + 1];
-		}
-		str1List.pop_back();
-	}
-	// If it's in the begin
-	else if (find == 0) {
-		str1List[pos] = str1List[pos].substr(longestString.length(), std::string::npos);
-	}
-	// If it's in the end
-	else if (find + longestString.length() == str1List[pos].length()) {
-		str1List[pos] = str1List[pos].substr(0, str1List[pos].length() - longestString.length());
-	}
-	// If it's in the middle
-	else {
-		// Break into two new elements
-		auto newStrLeft = str1List[pos].substr(0, find);
-		auto newStrRight = str1List[pos].substr(find + longestString.length(), std::string::npos);
-		str1List[pos] = newStrLeft;
-		str1List.push_back(newStrRight);
-	}
 }
 
 
@@ -191,7 +156,6 @@ void Greedy::correctMatrix(int i, int j, int(&overlapArray)[1000][1000], std::st
 		correctMatrix(i + 1, j + 1, overlapArray, stringArray);
 	}
 	else {
-		std::cout << "nextSolution reporting: Correcting Matrix! " << std::endl;
 	}
 
 }
