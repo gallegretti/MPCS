@@ -22,7 +22,7 @@ Greedy::~Greedy()
 }
 
 
-void Greedy::nextSolution(bool (&common)[1000][1000]) {
+void Greedy::nextSolution(int (&common)[1000][1000]) {
 	int i = 0;
 	int j = 0;
 	int psCopy[1000][1000];
@@ -41,8 +41,7 @@ void Greedy::nextSolution(bool (&common)[1000][1000]) {
 		}
 
 	while (overlapSize) {
-		std::cout << "i:" << locationLongest[0] << " j:" << locationLongest[1] << " valor:" << psCopy[locationLongest[0]][locationLongest[1]] << std::endl;
-		common[locationLongest[0]][locationLongest[1]] = true;
+		common[locationLongest[0]][locationLongest[1]] = overlapSize;
 		for (i = 0; i < overlapSize; i++)
 			for (j = 0; j <= str2.size(); j++)
 				psCopy[locationLongest[0] - i][j] = 0;
@@ -58,8 +57,8 @@ void Greedy::nextSolution(bool (&common)[1000][1000]) {
 			for (int j = 0; j <= str2.size(); j++)
 			{	
 				if (psCopy[i][j] > overlapSize) {
-					if (firstFlag || true) {
-						assertCorrect(i, j, psCopy);
+					if (firstFlag || rand() % 100 < 30) {
+						assertCorrect(i, j, psCopy, common);
 						if (psCopy[i][j] > overlapSize) {
 							overlapSize = psCopy[i][j];
 							locationLongest[0] = i;
@@ -131,20 +130,23 @@ void Greedy::commonStrings()
 }
 
  
-bool Greedy::assertCorrect(int i, int j, int (&overlapArray)[1000][1000]) {
+bool Greedy::assertCorrect(int i, int j, int (&overlapArray)[1000][1000], int(&common)[1000][1000]) {
 	if (overlapArray[i][j] == 1)
 		return true;
 	else if (overlapArray[i - 1][j - 1] == (overlapArray[i][j] - 1)) 
-		return assertCorrect(i - 1, j - 1, overlapArray);
+		return assertCorrect(i - 1, j - 1, overlapArray, common);
 	else {
-		correctMatrix(i, j, overlapArray);
+		correctMatrix(i, j, overlapArray, common);
 		return true;
 	}
 }
 
-void Greedy::correctMatrix(int i, int j, int(&overlapArray)[1000][1000]) {
+void Greedy::correctMatrix(int i, int j, int(&overlapArray)[1000][1000], int(&common)[1000][1000]) {
 	if (overlapArray[i][j] > 0) {
 		overlapArray[i][j] = overlapArray[i - 1][j - 1] + 1;
-		correctMatrix(i + 1, j + 1, overlapArray);
+		// Somente atualiza se ja tiver sido selecionado
+		if (common[i][j] != 0)
+			common[i][j] = overlapArray[i - 1][j - 1] + 1;
+		correctMatrix(i + 1, j + 1, overlapArray, common);
 	}
 }

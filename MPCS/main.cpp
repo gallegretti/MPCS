@@ -67,17 +67,15 @@ std::string prettyString(const std::vector<std::string> &list)
 	return out;
 }
 
-std::vector<std::string> toVector(int(&commonStrings)[1000][1000], bool(&selected)[1000][1000], std::string str1, std::string str2) 
+std::vector<std::string> toVector(int(&selected)[1000][1000], std::string str1, std::string str2) 
 {
 	std::vector<std::string> result;
 	for (auto i = 0; i < str1.length() + 1; i++)
 		for (auto j = 0; j < str2.length() + 1; j++) 
 		{
-			if (selected[i][j]) {
-				auto value = commonStrings[i][j];
-				//std::cout << "valor:" << value << std::endl;
+			auto value = selected[i][j];
+			if (value) {
 				result.push_back(str2.substr(j - value, value));
-				std::cout << "i:" << i << "j:" << j << " value:" << value << " result:" <<prettyString(result) << std::endl;
 			}
 		}
 	return result;
@@ -86,8 +84,8 @@ std::vector<std::string> toVector(int(&commonStrings)[1000][1000], bool(&selecte
 int main(int argc, char *argv[])
 {
 	std::string str1, str2;
-	bool selected[1000][1000] = { false };
-	/*
+	int selected[1000][1000] = { 0 };
+	
 	if (argc < 2) {
 		showHelp();
 		return 0;
@@ -108,12 +106,9 @@ int main(int argc, char *argv[])
 		std::cout << str2 << std::endl;
 		std::cout << "Seed: " << options.seed << std::endl;
 	}
-	*/
-	str2 = "bagab";
-	str1 = "bgaba";
 
 	std::vector<std::string> best;
-	auto greedyGenerator = Greedy(str1, str2, 1);
+	auto greedyGenerator = Greedy(str1, str2, options.seed);
 
 	/*
 	// Procura o maior bloco
@@ -136,7 +131,7 @@ int main(int argc, char *argv[])
 		// Desmarca ele
 
 	*/
-	for (auto i = 0; i < 1; i++)
+	for (auto i = 0; i < 1000; i++)
 	{
 		//auto instance = greedyGenerator.nextSolution();
 		// TODO: local search 
@@ -145,9 +140,9 @@ int main(int argc, char *argv[])
 		// 
 		for (auto i = 0; i < str1.length() + 1; i++)
 			for (auto j = 0; j < str2.length() + 1; j++)
-				selected[i][j] = false;
+				selected[i][j] = 0;
 		greedyGenerator.nextSolution(selected);
-		auto instance = toVector(greedyGenerator.psMatrix, selected, str1, str2);
+		auto instance = toVector(selected, str1, str2);
 		if (instance.size() < best.size() || best.size() == 0)
 		{
 			best = instance;
