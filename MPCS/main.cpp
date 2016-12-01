@@ -75,8 +75,9 @@ std::vector<std::string> toVector(int(&commonStrings)[1000][1000], bool(&selecte
 		{
 			if (selected[i][j]) {
 				auto value = commonStrings[i][j];
-				result.push_back(str1.substr(j - value + 1, value - 1));
-				std::cout << "i:" << i << "j:" << j << " value:" << value << " result:" <<prettyString(result) << std::endl;
+				std::cout << "valor:" << value << std::endl;
+				//result.push_back(str2.substr(j - value, value + 1));
+				//std::cout << "i:" << i << "j:" << j << " value:" << value << " result:" <<prettyString(result) << std::endl;
 			}
 		}
 	return result;
@@ -108,8 +109,8 @@ int main(int argc, char *argv[])
 		std::cout << "Seed: " << options.seed << std::endl;
 	}
 	*/
-	str2 = "abcdabce";
-	str1 = "eabcdabc";
+	str2 = "cdabcdabceab";
+	str1 = "abceabcdabcd";
 
 	std::vector<std::string> best;
 	auto greedyGenerator = Greedy(str1, str2, 1);
