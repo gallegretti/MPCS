@@ -81,11 +81,67 @@ std::vector<std::string> toVector(int(&selected)[1000][1000], const std::string 
 	return result;
 }
 
+void localSearch(int(&selected)[1000][1000], int(&psMatrix)[1000][1000], const std::string &str1, const std::string &str2)
+{
+	static bool firstTime = true;
+	static int lineWithValue[1000] = { 0 };
+
+	if (firstTime)
+	{
+		// Para cada coluna, indica a linha que há o valor na matriz 'selected' (0 se não há)
+		for (auto i = 0; i < str1.length() + 1; i++)
+			for (auto j = 0; j < str2.length() + 1; j++)
+				if (selected[i][j] != 0) {
+					lineWithValue[j] = i;
+				}
+		firstTime = false;
+	}
+
+	bool improvement = false;
+	//do
+	//{
+		int col1 = -1;
+		int col2 = -1;
+		// Pega todo par de colunas em sequencia, com indices de colunas col1 < col2
+		for (auto i = 0; i < str1.length() + 1; i++)
+		{
+			if (!lineWithValue[i])
+				continue;
+
+			if (col1 == -1)
+			{
+				col1 = i;
+				continue;
+			}
+
+			if (col2 == -1)
+			{
+				col2 = i;
+			}
+			else
+			{
+				col1 = col2;
+				col2 = i;
+			}
+
+			// Caso exista uma unica substring que cubra as duas atuais
+			auto sum = selected[lineWithValue[col2]][col2] + selected[lineWithValue[col1]][col1];
+			if (psMatrix[lineWithValue[col2]][col2] >= sum)
+			{
+				// Desmarca a primeira substring
+				selected[lineWithValue[col1]][col1] = 0;
+				// Re-marca a nova, sabendo que vai cobrir a anterior
+				selected[lineWithValue[col2]][col2] = sum;
+			}
+		}
+	//} while (improvement);
+}
+
 int main(int argc, char *argv[])
 {
 	std::string str1, str2;
 	int selected[1000][1000] = { 0 };
-	int lineWithValue[1000] = { 0 };
+	
 	
 	if (argc < 2) {
 		showHelp();
@@ -114,57 +170,11 @@ int main(int argc, char *argv[])
 
 	for (auto i = 0; i < 1000; i++)
 	{	
+		// Initial solution
 		greedyGenerator.nextSolution(selected);
-
 		// Local search
-		// Para cada coluna, indica a linha que há o valor na matriz 'selected' (0 se não há)
-		for (auto i = 0; i < str1.length() + 1; i++)
-			for (auto j = 0; j < str2.length() + 1; j++)
-				if (selected[i][j] != 0) {
-					lineWithValue[j] = i;
-				}
-
-		bool improvement = true;
-		while (improvement)
-		{
-
-			int col1 = -1;
-			int col2 = -1;
-			// Pega todo par de colunas em sequencia, com indices de colunas col1 < col2
-			for (auto i = 0; i < str1.length() + 1; i++)
-			{
-				if (!lineWithValue[i])
-					continue;
-
-				if (col1 == -1)
-				{
-					col1 = i;
-					continue;
-				}
-
-				if (col2 == -1)
-				{
-					col2 = i;
-				}
-				else
-				{
-					col1 = col2;
-					col2 = i;
-				}
-
-				// Caso exista uma unica substring que cubra as duas atuais
-				auto sum = selected[lineWithValue[col2]][col2] + selected[lineWithValue[col1]][col1];
-				if (greedyGenerator.psMatrix[lineWithValue[col2]][col2] >= sum)
-				{
-					// Desmarca a primeira substring
-					selected[lineWithValue[col1]][col1] = 0;
-					// Re-marca a nova, sabendo que vai cobrir a anterior
-					selected[lineWithValue[col2]][col2] = sum;
-				}
-			}
-			improvement = false;
-		}
-		
+		localSearch(selected, greedyGenerator.psMatrix, str1, str2);
+		// Select if it's better
 		auto instance = toVector(selected, str1, str2);
 		if (instance.size() < best.size() || best.size() == 0)
 		{
