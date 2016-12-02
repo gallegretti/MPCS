@@ -2,9 +2,10 @@
 #include <string>
 #include "Greedy.h"
 #include <fstream>
+#include <time.h>
 
 struct Options {
-	int maximumMinutes;
+	int maximumSeconds;
 	bool verbose;
 	bool glpk;
 	unsigned int seed;
@@ -16,7 +17,6 @@ Options parseOptions(int argc, char *argv[])
 	options.verbose = false;
 	options.glpk = false;
 	options.seed = 123456;
-	options.maximumMinutes = 1;
 	for (int i = 2; i < argc; i++)
 	{
 		if (strcmp(argv[i], "-s") == 0)
@@ -41,7 +41,7 @@ Options parseOptions(int argc, char *argv[])
 				std::cout << "Invalid time, using default\n";
 				break;
 			}
-			options.maximumMinutes = atoi(argv[i + 1]);
+			options.maximumSeconds = atoi(argv[i + 1]);
 		}
 	}
 	return options;
@@ -54,7 +54,7 @@ void showHelp()
 	std::cout << "options:\n" << std::endl;
 	std::cout << "--glpk         Returns the GLPK formulation for the input in the stdout" << std::endl;
 	std::cout << "-s <seed>      Seed to be used in the GRASP's RNG (Does not apply to --glpk)" << std::endl;
-	std::cout << "-t <minutes>   Time in minutes that the program is allowed to run (Does not apply to --glpk)" << std::endl;
+	std::cout << "-t <seconds>   Time in seconds that the program is allowed to run (Does not apply to --glpk)" << std::endl;
 	std::cout << "--verbose      Prints verbose log to in the stdout (Does not apply to --glpk)" << std::endl;
 }
 
@@ -162,6 +162,9 @@ int localSearch(int(&selected)[1000][1000], int(&psMatrix)[1000][1000], const st
 
 int main(int argc, char *argv[])
 {
+	time_t startTime;
+	time(&startTime);
+	
 	std::string str1, str2;
 	int selected[1000][1000] = { 0 };
 	
@@ -184,6 +187,7 @@ int main(int argc, char *argv[])
 		std::cout << str1 << std::endl;
 		std::cout << str2 << std::endl;
 		std::cout << "Seed: " << options.seed << std::endl;
+		std::cout << "Maximum time: " << options.maximumSeconds << "s" << std::endl;
 	}
 	
 	
@@ -191,7 +195,7 @@ int main(int argc, char *argv[])
 	auto greedyGenerator = Greedy(str1, str2, options.seed);
 
 	// GRASP:
-	for (auto i = 0; i < 1000; i++)
+	while(true)
 	{
 		// Initial solution
 		greedyGenerator.nextSolution(selected);
@@ -202,6 +206,11 @@ int main(int argc, char *argv[])
 		{
 			best = toVector(selected, str1, str2);
 		}
+		// End if time is up
+		time_t currTime;
+		time(&currTime);
+		if (difftime(currTime, startTime) >= options.maximumSeconds)
+			break;
 	}
 
 	std::cout << "Melhor string:" << prettyString(best) << std::endl;
