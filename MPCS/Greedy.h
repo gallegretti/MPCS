@@ -27,10 +27,10 @@ public:
 
 	bool AreStringsRelated(const std::vector<std::string> &list1, const std::vector<std::string> &list2);
 
+	int psMatrix[1000][1000];
 
 private:
 	std::string str1;
 	std::string str2;
-	int psMatrix[1000][1000];
 };
 

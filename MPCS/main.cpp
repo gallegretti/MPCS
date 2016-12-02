@@ -85,6 +85,7 @@ int main(int argc, char *argv[])
 {
 	std::string str1, str2;
 	int selected[1000][1000] = { 0 };
+	int lineWithValue[1000] = { 0 };
 	
 	if (argc < 2) {
 		showHelp();
@@ -110,49 +111,69 @@ int main(int argc, char *argv[])
 	std::vector<std::string> best;
 	auto greedyGenerator = Greedy(str1, str2, options.seed);
 
-	/*
-	// Procura o maior bloco
-	int biggest = 0;
-	int biggest_i;
-	int biggest_j;
-	for (auto i = 0; i < str1.length(); i++)
-		for (auto j = 0; j < str2.length(); j++)
-		{
-			if (selected[i][j] == true)
-			{
-				if (greedyGenerator.psMatrix[i][j] > biggest)
-				{
-					biggest = greedyGenerator.psMatrix[i][j];
-					biggest_i = i;
-					biggest_j = j;
-				}
-			}
-		}
-		// Desmarca ele
 
-	*/
 	for (auto i = 0; i < 1000; i++)
-	{
-		//auto instance = greedyGenerator.nextSolution();
-		// TODO: local search 
-		// Procura o maior bloco
-		// Desmarca
-		// 
+	{	
+		greedyGenerator.nextSolution(selected);
+
+		// Local search
+		// Para cada coluna, indica a linha que há o valor na matriz 'selected' (0 se não há)
 		for (auto i = 0; i < str1.length() + 1; i++)
 			for (auto j = 0; j < str2.length() + 1; j++)
-				selected[i][j] = 0;
-		greedyGenerator.nextSolution(selected);
+				if (selected[i][j] != 0) {
+					lineWithValue[j] = i;
+				}
+
+		bool improvement = true;
+		while (improvement)
+		{
+
+			int col1 = -1;
+			int col2 = -1;
+			// Pega todo par de colunas em sequencia, com indices de colunas col1 < col2
+			for (auto i = 0; i < str1.length() + 1; i++)
+			{
+				if (!lineWithValue[i])
+					continue;
+
+				if (col1 == -1)
+				{
+					col1 = i;
+					continue;
+				}
+
+				if (col2 == -1)
+				{
+					col2 = i;
+				}
+				else
+				{
+					col1 = col2;
+					col2 = i;
+				}
+
+				// Caso exista uma unica substring que cubra as duas atuais
+				auto sum = selected[lineWithValue[col2]][col2] + selected[lineWithValue[col1]][col1];
+				if (greedyGenerator.psMatrix[lineWithValue[col2]][col2] >= sum)
+				{
+					// Desmarca a primeira substring
+					selected[lineWithValue[col1]][col1] = 0;
+					// Re-marca a nova, sabendo que vai cobrir a anterior
+					selected[lineWithValue[col2]][col2] = sum;
+				}
+			}
+			improvement = false;
+		}
+		
 		auto instance = toVector(selected, str1, str2);
 		if (instance.size() < best.size() || best.size() == 0)
 		{
 			best = instance;
-			std::cout << prettyString(best) << std::endl;
-			std::cout << "Size: " << best.size();
 		}
 	}
 
-	std::cout << prettyString(best) << std::endl;
-	std::cout << "Size: " << best.size();
+	std::cout << "Melhor string:" << prettyString(best) << std::endl;
+	std::cout << "Tamanho: " << best.size() << std::endl;
 	
 	if ( !greedyGenerator.AreStringsRelated(best, { str1 }) || !greedyGenerator.AreStringsRelated(best, { str2 }) ) {
 		std::cout << "IF YOU'RE READING THIS, YOU FUCKED UP";

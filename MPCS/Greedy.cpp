@@ -57,7 +57,7 @@ void Greedy::nextSolution(int (&common)[1000][1000]) {
 			for (int j = 0; j <= str2.size(); j++)
 			{	
 				if (psCopy[i][j] > overlapSize) {
-					if (firstFlag || rand() % 100 < 30) {
+					if (firstFlag || rand() % 100 < 60) {
 						assertCorrect(i, j, psCopy, common);
 						if (psCopy[i][j] > overlapSize) {
 							overlapSize = psCopy[i][j];
