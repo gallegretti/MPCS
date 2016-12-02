@@ -72,7 +72,7 @@ void Greedy::nextSolution(int (&common)[1000][1000]) {
 	}
 }
 
-bool Greedy::AreStringsRelated(std::vector<std::string> list1, std::vector<std::string> list2)
+bool Greedy::AreStringsRelated(const std::vector<std::string> &list1, const std::vector<std::string> &list2)
 {
 	int a[256] = { 0 };
 	int b[256] = { 0 };
@@ -121,8 +121,6 @@ void Greedy::commonStrings()
 					locationLongest[1] = j;
 				}
 				overlapSize = std::max(overlapSize, psMatrix[i][j]);
-				//partitionsMatrix[i][j] = partitionsMatrix[i - 1][j - 1];
-				//partitionsMatrix[i][j] += str1[i - 1];
 			}
 			else psMatrix[i][j] = 0;
 		}

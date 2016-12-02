@@ -67,7 +67,7 @@ std::string prettyString(const std::vector<std::string> &list)
 	return out;
 }
 
-std::vector<std::string> toVector(int(&selected)[1000][1000], std::string str1, std::string str2) 
+std::vector<std::string> toVector(int(&selected)[1000][1000], const std::string &str1, const std::string &str2) 
 {
 	std::vector<std::string> result;
 	for (auto i = 0; i < str1.length() + 1; i++)

@@ -25,13 +25,12 @@ public:
 
 	void Greedy::correctMatrix(int i, int j, int(&overlapArray)[1000][1000], int(&common)[1000][1000]);
 
-	bool AreStringsRelated(std::vector<std::string> list1, std::vector<std::string> list2);
+	bool AreStringsRelated(const std::vector<std::string> &list1, const std::vector<std::string> &list2);
 
 
-public:
+private:
 	std::string str1;
 	std::string str2;
 	int psMatrix[1000][1000];
-	//std::string partitionsMatrix[1000][1000];
 };
 
