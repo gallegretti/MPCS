@@ -67,11 +67,11 @@ std::string prettyString(const std::vector<std::string> &list)
 	return out;
 }
 
-std::vector<std::string> toVector(int(&selected)[1000][1000], const std::string &str1, const std::string &str2) 
+std::vector<std::string> toVector(int(&selected)[1000][1000], const std::string &str1, const std::string &str2)
 {
 	std::vector<std::string> result;
 	for (auto i = 0; i < str1.length() + 1; i++)
-		for (auto j = 0; j < str2.length() + 1; j++) 
+		for (auto j = 0; j < str2.length() + 1; j++)
 		{
 			auto value = selected[i][j];
 			if (value) {
@@ -83,66 +83,63 @@ std::vector<std::string> toVector(int(&selected)[1000][1000], const std::string 
 
 void localSearch(int(&selected)[1000][1000], int(&psMatrix)[1000][1000], const std::string &str1, const std::string &str2)
 {
-	static bool firstTime = true;
+
 	static int lineWithValue[1000] = { 0 };
-
-	if (firstTime)
-	{
-		// Para cada coluna, indica a linha que há o valor na matriz 'selected' (0 se não há)
-		for (auto i = 0; i < str1.length() + 1; i++)
-			for (auto j = 0; j < str2.length() + 1; j++)
-				if (selected[i][j] != 0) {
-					lineWithValue[j] = i;
-				}
-		firstTime = false;
+	for (auto i = 0; i < str1.length() + 1; i++) {
+		lineWithValue[i] = 0;
 	}
-
-	bool improvement = false;
-	//do
-	//{
-		int col1 = -1;
-		int col2 = -1;
-		// Pega todo par de colunas em sequencia, com indices de colunas col1 < col2
-		for (auto i = 0; i < str1.length() + 1; i++)
+	// Para cada coluna, indica a linha que há o valor na matriz 'selected' (0 se não há)
+	for (auto i = 0; i < str1.length() + 1; i++)
+		for (auto j = 0; j < str2.length() + 1; j++)
 		{
-			if (!lineWithValue[i])
-				continue;
-
-			if (col1 == -1)
-			{
-				col1 = i;
-				continue;
-			}
-
-			if (col2 == -1)
-			{
-				col2 = i;
-			}
-			else
-			{
-				col1 = col2;
-				col2 = i;
-			}
-
-			// Caso exista uma unica substring que cubra as duas atuais
-			auto sum = selected[lineWithValue[col2]][col2] + selected[lineWithValue[col1]][col1];
-			if (psMatrix[lineWithValue[col2]][col2] >= sum)
-			{
-				// Desmarca a primeira substring
-				selected[lineWithValue[col1]][col1] = 0;
-				// Re-marca a nova, sabendo que vai cobrir a anterior
-				selected[lineWithValue[col2]][col2] = sum;
+			if (selected[i][j] != 0) {
+				lineWithValue[j] = i;
+				// Como há um valor por linha, pode ir para a proxima quando encontrar
+				break;
 			}
 		}
-	//} while (improvement);
+
+	int col1 = -1;
+	int col2 = -1;
+	// Pega todo par de colunas em sequencia, com indices de colunas col1 < col2
+	for (auto i = 0; i < str1.length() + 1; i++)
+	{
+		if (!lineWithValue[i])
+			continue;
+
+		if (col1 == -1)
+		{
+			col1 = i;
+			continue;
+		}
+
+		if (col2 == -1)
+		{
+			col2 = i;
+		}
+		else
+		{
+			col1 = col2;
+			col2 = i;
+		}
+
+		// Caso exista uma unica substring que cubra as duas atuais
+		auto sum = selected[lineWithValue[col2]][col2] + selected[lineWithValue[col1]][col1];
+		if (psMatrix[lineWithValue[col2]][col2] >= sum)
+		{
+			// Desmarca a primeira substring
+			selected[lineWithValue[col1]][col1] = 0;
+			// Re-marca a nova, sabendo que vai cobrir a anterior
+			selected[lineWithValue[col2]][col2] = sum;
+		}
+	}
 }
 
 int main(int argc, char *argv[])
 {
 	std::string str1, str2;
 	int selected[1000][1000] = { 0 };
-	
-	
+
 	if (argc < 2) {
 		showHelp();
 		return 0;
@@ -163,13 +160,14 @@ int main(int argc, char *argv[])
 		std::cout << str2 << std::endl;
 		std::cout << "Seed: " << options.seed << std::endl;
 	}
+	
 
 	std::vector<std::string> best;
 	auto greedyGenerator = Greedy(str1, str2, options.seed);
 
 
 	for (auto i = 0; i < 1000; i++)
-	{	
+	{
 		// Initial solution
 		greedyGenerator.nextSolution(selected);
 		// Local search
@@ -184,11 +182,11 @@ int main(int argc, char *argv[])
 
 	std::cout << "Melhor string:" << prettyString(best) << std::endl;
 	std::cout << "Tamanho: " << best.size() << std::endl;
-	
-	if ( !greedyGenerator.AreStringsRelated(best, { str1 }) || !greedyGenerator.AreStringsRelated(best, { str2 }) ) {
+
+	if (!greedyGenerator.AreStringsRelated(best, { str1 }) || !greedyGenerator.AreStringsRelated(best, { str2 })) {
 		std::cout << "IF YOU'RE READING THIS, YOU FUCKED UP";
 	}
-	
+
 
 	return 0;
 }
