@@ -4,6 +4,7 @@
 #include <fstream>
 
 struct Options {
+	int maximumMinutes;
 	bool verbose;
 	bool glpk;
 	unsigned int seed;
@@ -15,6 +16,7 @@ Options parseOptions(int argc, char *argv[])
 	options.verbose = false;
 	options.glpk = false;
 	options.seed = 123456;
+	options.maximumMinutes = 1;
 	for (int i = 2; i < argc; i++)
 	{
 		if (strcmp(argv[i], "-s") == 0)
@@ -33,6 +35,14 @@ Options parseOptions(int argc, char *argv[])
 		{
 			options.glpk = true;
 		}
+		if (strcmp(argv[i], "-t") == 0)
+		{
+			if (argc <= i + 1) {
+				std::cout << "Invalid time, using default\n";
+				break;
+			}
+			options.maximumMinutes = atoi(argv[i + 1]);
+		}
 	}
 	return options;
 }
@@ -42,9 +52,10 @@ void showHelp()
 	std::cout << "Usage: mpcs.exe <file> [options]\n" << std::endl;
 	std::cout << "For a <file> that has two related strings, one per line\n" << std::endl;
 	std::cout << "options:\n" << std::endl;
-	std::cout << "-s <seed>      Seed to be used in the GRASP's RNG" << std::endl;
-	std::cout << "--verbose      Prints verbose log to in the stdout" << std::endl;
 	std::cout << "--glpk         Returns the GLPK formulation for the input in the stdout" << std::endl;
+	std::cout << "-s <seed>      Seed to be used in the GRASP's RNG (Does not apply to --glpk)" << std::endl;
+	std::cout << "-t <minutes>   Time in minutes that the program is allowed to run (Does not apply to --glpk)" << std::endl;
+	std::cout << "--verbose      Prints verbose log to in the stdout (Does not apply to --glpk)" << std::endl;
 }
 
 bool readStringsFromFile(char * file, std::string &string1, std::string &string2)
