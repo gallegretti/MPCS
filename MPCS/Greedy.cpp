@@ -25,7 +25,7 @@ Greedy::~Greedy()
 void Greedy::nextSolution(int (&common)[1000][1000]) {
 	int i = 0;
 	int j = 0;
-	int psCopy[1000][1000];
+	static int psCopy[1000][1000];
 	int locationLongest[2] = { 0, 0 };
 	int overlapSize = 0;
 	bool firstFlag = true;
