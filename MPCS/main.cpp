@@ -17,6 +17,7 @@ Options parseOptions(int argc, char *argv[])
 	options.verbose = false;
 	options.glpk = false;
 	options.seed = 123456;
+	options.maximumSeconds = 5;
 	for (int i = 2; i < argc; i++)
 	{
 		if (strcmp(argv[i], "-s") == 0)
@@ -55,7 +56,7 @@ void showHelp()
 	std::cout << "--glpk         Returns the GLPK formulation for the input in the stdout" << std::endl;
 	std::cout << "-s <seed>      Seed to be used in the GRASP's RNG (Does not apply to --glpk)" << std::endl;
 	std::cout << "-t <seconds>   Time in seconds that the program is allowed to run (Does not apply to --glpk)" << std::endl;
-	std::cout << "--verbose      Prints verbose log to in the stdout (Does not apply to --glpk)" << std::endl;
+	std::cout << "--verbose      Prints verbose log in the stdout (Does not apply to --glpk)" << std::endl;
 }
 
 bool readStringsFromFile(char * file, std::string &string1, std::string &string2)
