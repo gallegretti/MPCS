@@ -5,6 +5,7 @@
 
 struct Options {
 	bool verbose;
+	bool glpk;
 	unsigned int seed;
 };
 
@@ -12,6 +13,7 @@ Options parseOptions(int argc, char *argv[])
 {
 	Options options;
 	options.verbose = false;
+	options.glpk = false;
 	options.seed = 123456;
 	for (int i = 2; i < argc; i++)
 	{
@@ -27,6 +29,10 @@ Options parseOptions(int argc, char *argv[])
 		{
 			options.verbose = true;
 		}
+		if (strcmp(argv[i], "--glpk") == 0) 
+		{
+			options.glpk = true;
+		}
 	}
 	return options;
 }
@@ -36,8 +42,9 @@ void showHelp()
 	std::cout << "Usage: mpcs.exe <file> [options]\n" << std::endl;
 	std::cout << "For a <file> that has two related strings, one per line\n" << std::endl;
 	std::cout << "options:\n" << std::endl;
-	std::cout << "-s <seed>      Seed to be used in the RNG" << std::endl;
-	std::cout << "--verbose      Prints verbose log" << std::endl;
+	std::cout << "-s <seed>      Seed to be used in the GRASP's RNG" << std::endl;
+	std::cout << "--verbose      Prints verbose log to in the stdout" << std::endl;
+	std::cout << "--glpk         Returns the GLPK formulation for the input in the stdout" << std::endl;
 }
 
 bool readStringsFromFile(char * file, std::string &string1, std::string &string2)
