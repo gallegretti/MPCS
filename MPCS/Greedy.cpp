@@ -30,8 +30,9 @@ void Greedy::nextSolution(int (&common)[1000][1000]) {
 	int overlapSize = 0;
 	bool firstFlag = true;
 	
-	for (i = 0; i < 1000; i++)
-		for (j = 0; j < 1000; j++) {
+	for (i = 0; i < str1.length() + 1; i++)
+		for (j = 0; j < str2.length() + 1; j++) {
+			common[i][j] = 0;
 			psCopy[i][j] = psMatrix[i][j];
 			if (psCopy[i][j] > overlapSize) {
 				overlapSize = psCopy[i][j];

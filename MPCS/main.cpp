@@ -81,9 +81,9 @@ std::vector<std::string> toVector(int(&selected)[1000][1000], const std::string 
 	return result;
 }
 
-void localSearch(int(&selected)[1000][1000], int(&psMatrix)[1000][1000], const std::string &str1, const std::string &str2)
+int localSearch(int(&selected)[1000][1000], int(&psMatrix)[1000][1000], const std::string &str1, const std::string &str2)
 {
-
+	int blocos = 0;
 	static int lineWithValue[1000] = { 0 };
 	for (auto i = 0; i < str1.length() + 1; i++) {
 		lineWithValue[i] = 0;
@@ -93,6 +93,7 @@ void localSearch(int(&selected)[1000][1000], int(&psMatrix)[1000][1000], const s
 		for (auto j = 0; j < str2.length() + 1; j++)
 		{
 			if (selected[i][j] != 0) {
+				blocos++;
 				lineWithValue[j] = i;
 				// Como há um valor por linha, pode ir para a proxima quando encontrar
 				break;
@@ -131,15 +132,17 @@ void localSearch(int(&selected)[1000][1000], int(&psMatrix)[1000][1000], const s
 			selected[lineWithValue[col1]][col1] = 0;
 			// Re-marca a nova, sabendo que vai cobrir a anterior
 			selected[lineWithValue[col2]][col2] = sum;
+			blocos--;
 		}
 	}
+	return blocos;
 }
 
 int main(int argc, char *argv[])
 {
 	std::string str1, str2;
 	int selected[1000][1000] = { 0 };
-
+	
 	if (argc < 2) {
 		showHelp();
 		return 0;
@@ -153,6 +156,7 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
+
 	if (options.verbose)
 	{
 		std::cout << "Inputs:" << std::endl;
@@ -161,22 +165,20 @@ int main(int argc, char *argv[])
 		std::cout << "Seed: " << options.seed << std::endl;
 	}
 	
-
 	std::vector<std::string> best;
 	auto greedyGenerator = Greedy(str1, str2, options.seed);
 
-
+	// GRASP:
 	for (auto i = 0; i < 1000; i++)
 	{
 		// Initial solution
 		greedyGenerator.nextSolution(selected);
 		// Local search
-		localSearch(selected, greedyGenerator.psMatrix, str1, str2);
+		auto blocos = localSearch(selected, greedyGenerator.psMatrix, str1, str2);
 		// Select if it's better
-		auto instance = toVector(selected, str1, str2);
-		if (instance.size() < best.size() || best.size() == 0)
+		if (blocos < best.size() || best.size() == 0)
 		{
-			best = instance;
+			best = toVector(selected, str1, str2);
 		}
 	}
 
