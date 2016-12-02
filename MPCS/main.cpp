@@ -17,6 +17,10 @@ Options parseOptions(int argc, char *argv[])
 	{
 		if (strcmp(argv[i], "-s") == 0)
 		{
+			if (argc <= i + 1) {
+				std::cout << "Invalid seed, using default\n";
+				break;
+			}
 			options.seed = atoi(argv[i + 1]);
 		}
 		if (strcmp(argv[i], "--verbose") == 0)
@@ -156,7 +160,6 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-
 	if (options.verbose)
 	{
 		std::cout << "Inputs:" << std::endl;
@@ -164,6 +167,7 @@ int main(int argc, char *argv[])
 		std::cout << str2 << std::endl;
 		std::cout << "Seed: " << options.seed << std::endl;
 	}
+	
 	
 	std::vector<std::string> best;
 	auto greedyGenerator = Greedy(str1, str2, options.seed);
