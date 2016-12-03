@@ -99,29 +99,22 @@ bool Greedy::AreStringsRelated(const std::vector<std::string> &list1, const std:
 
 void Greedy::commonStrings()
 {
-	int i = 0;
-	int j = 0;
-	int locationLongest[2] = {0, 0};
-	int overlapSize = 0;
-
 	//Monta matriz completa de overlaps das duas strings
 	for (int i = 0; i <= str1.size(); i++)
 	{
 		for (int j = 0; j <= str2.size(); j++)
 		{
-			if (i == 0 || j == 0) 
+			if (i == 0 || j == 0)
 				psMatrix[i][j] = 0;
 
 			else if (str1[i - 1] == str2[j - 1])
 			{
 				psMatrix[i][j] = psMatrix[i - 1][j - 1] + 1;
-				if (psMatrix[i][j] > overlapSize) {
-					locationLongest[0] = i;
-					locationLongest[1] = j;
-				}
-				overlapSize = std::max(overlapSize, psMatrix[i][j]);
 			}
-			else psMatrix[i][j] = 0;
+			else
+			{
+				psMatrix[i][j] = 0;
+			}
 		}
 	}
 }
