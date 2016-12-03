@@ -3,6 +3,7 @@
 #include "Greedy.h"
 #include <fstream>
 #include <time.h>
+#include <sstream>
 
 struct Options {
 	int maximumSeconds;
@@ -165,6 +166,47 @@ int localSearch(int(&selected)[1000][1000], int(&psMatrix)[1000][1000], const st
 	return blocos;
 }
 
+std::string GLPK_matrixToparam(int(&selected)[1000][1000], int n, std::string paramName)
+{
+	std::ostringstream parameter;
+	parameter << "param " << paramName << " :" << "\n";
+	for (auto i = 1; i < n + 1; i++) {
+		parameter << i << " ";
+	}
+	parameter << ":=\n";
+	for (auto i = 1; i < n + 1; i++)
+	{
+		parameter << i << " ";
+		for (auto j = 0; j < n; j++) {
+			parameter << selected[i - 1][j];
+			if (j != n)
+				parameter << " ";
+		}
+		if (i != n)
+			parameter << "\n";
+	}
+	parameter << ";\n\n";
+	return parameter.str();
+}
+
+void GLPK(int(&psMatrix)[1000][1000], int n) {
+	std::string parameters;
+
+	int isCharEqual[1000][1000] = { 0 };
+	for (auto i = 0; i < n + 1; i++) {
+		for (auto j = 0; j < n + 1; j++) {
+			if (psMatrix[i][j] != 0) {
+				isCharEqual[i - 1][j - 1] = 1;
+			}
+		}
+	}
+	// dl = decisao ligacao
+	parameters += GLPK_matrixToparam(isCharEqual, n, "dc");
+
+	std::cout << parameters;
+}
+
+
 int main(int argc, char *argv[])
 {
 	time_t startTime;
@@ -173,18 +215,26 @@ int main(int argc, char *argv[])
 	std::string str1, str2;
 	int selected[1000][1000] = { 0 };
 	
-	
 	if (argc < 2) {
 		showHelp();
 		return 0;
 	}
 
 	auto options = parseOptions(argc, argv);
+
 	auto success = readStringsFromFile(argv[1], str1, str2);
 	if (success == false)
 	{
 		std::cout << "Failed to read the input file" << std::endl;
 		return -1;
+	}
+
+	std::vector<std::string> best;
+	auto greedyGenerator = Greedy(str1, str2, options.seed);
+
+	if (options.glpk) {
+		GLPK(greedyGenerator.psMatrix, str1.length());
+		return 0;
 	}
 
 	if (options.verbose)
@@ -196,9 +246,6 @@ int main(int argc, char *argv[])
 		std::cout << "Seed: " << options.seed << std::endl;
 		std::cout << "Maximum time: " << options.maximumSeconds << "s" << std::endl;
 	}
-
-	std::vector<std::string> best;
-	auto greedyGenerator = Greedy(str1, str2, options.seed);
 
 	// GRASP:
 	while(true)
