@@ -176,6 +176,7 @@ std::string GLPK_matrixToparam(int(&selected)[1000][1000], int n, std::string pa
 	parameter << ":=\n";
 	for (auto i = 1; i < n + 1; i++)
 	{
+		parameter << i << " ";
 		for (auto j = 0; j < n; j++) {
 			parameter << selected[i - 1][j];
 			if (j != n + 1)
@@ -230,8 +231,8 @@ void GLPK(int(&psMatrix)[1000][1000], std::string str1, std::string str2) {
 
 	parameters += GLPK_ss(n);
 	
-	parameters += GLPK_param("string1", str1);
-	parameters += GLPK_param("string2", str2);
+	//parameters += GLPK_param("string1", str1);
+	//parameters += GLPK_param("string2", str2);
 
 	parameters += GLPK_matrixToparam(isCharEqual, n, "c");
 	
