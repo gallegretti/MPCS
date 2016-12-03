@@ -148,7 +148,7 @@ int localSearch(int(&selected)[1000][1000], int(&psMatrix)[1000][1000], const st
 		}
 		
 		// Assegura que os blocos sao vizinhos nas duas strings
-		if ((col2 - lineWithValue[col1] == 0) && (selected[lineWithValue[col2]][col2] - col1 == 0))
+		if ( (col2 - col1 == selected[lineWithValue[col2]][col2]) && (lineWithValue[col2] - lineWithValue[col1] == selected[lineWithValue[col2]][col2]))
 		{
 			// Caso exista uma unica substring que cubra as duas atuais
 			auto sum = selected[lineWithValue[col2]][col2] + selected[lineWithValue[col1]][col1];
@@ -189,9 +189,10 @@ int main(int argc, char *argv[])
 
 	if (options.verbose)
 	{
-		std::cout << "Inputs:" << std::endl;
-		std::cout << str1 << std::endl;
-		std::cout << str2 << std::endl;
+		std::cout << "Input file:" << argv[1] << std::endl;
+		std::cout << "Strings:" << std::endl;
+		std::cout << "-" << str1 << std::endl;
+		std::cout << "-" << str2 << std::endl;
 		std::cout << "Seed: " << options.seed << std::endl;
 		std::cout << "Maximum time: " << options.maximumSeconds << "s" << std::endl;
 	}
