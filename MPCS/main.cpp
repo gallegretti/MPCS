@@ -195,35 +195,36 @@ int main(int argc, char *argv[])
 		std::cout << "Seed: " << options.seed << std::endl;
 		std::cout << "Maximum time: " << options.maximumSeconds << "s" << std::endl;
 	}
-	/*
-	str1 = "abab";
-	str2 = "abba";
-	*/
+
 	std::vector<std::string> best;
 	auto greedyGenerator = Greedy(str1, str2, options.seed);
 
 	// GRASP:
 	while(true)
 	{
-		// Initial solution
-		greedyGenerator.nextSolution(selected);
-		// Local search
-		auto blocos = localSearch(selected, greedyGenerator.psMatrix, str1, str2);
-		// Select if it's better
-		if ((selected, str1, str2).size() < best.size() || best.size() == 0)
-		{
-			best = toVector(selected, str1, str2);
-		}
 		// End if time is up
 		time_t currTime;
 		time(&currTime);
 		if (difftime(currTime, startTime) >= options.maximumSeconds)
 			break;
+
+		// Initial solution
+		greedyGenerator.nextSolution(selected);
+		// Local search
+		auto blocos = localSearch(selected, greedyGenerator.psMatrix, str1, str2);
+		// Select if it's better
+		if (blocos < best.size() || best.size() == 0)
+		{
+			best = toVector(selected, str1, str2);
+			if (options.verbose) {
+				std::cout << "t:" << difftime(currTime, startTime) << "s, n:" << blocos << std::endl;
+			}
+		}
+
 	}
 
-	std::cout << "Melhor string:" << prettyString(best) << std::endl;
-	std::cout << "Tamanho: " << best.size() << std::endl;
-
+	std::cout << "Best set:" << prettyString(best) << std::endl;
+	std::cout << "Size: " << best.size() << std::endl;
 	if (!greedyGenerator.AreStringsRelated(best, { str1 }) || !greedyGenerator.AreStringsRelated(best, { str2 })) {
 		std::cout << "IF YOU'RE READING THIS, YOU FUCKED UP";
 	}
