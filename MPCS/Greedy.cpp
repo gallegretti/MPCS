@@ -57,7 +57,8 @@ void Greedy::nextSolution(int (&common)[1000][1000]) {
 				}
 			}
 		}
-		common[locationLongest[0]][locationLongest[1]] = overlapSize;
+		if (overlapSize)
+			common[locationLongest[0]][locationLongest[1]] = overlapSize;
 		// Update select matrix
 		for (i = 0; i < overlapSize; i++)
 			for (j = 0; j <= str2.size(); j++)
