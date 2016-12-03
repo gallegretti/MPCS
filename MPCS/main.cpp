@@ -176,10 +176,9 @@ std::string GLPK_matrixToparam(int(&selected)[1000][1000], int n, std::string pa
 	parameter << ":=\n";
 	for (auto i = 1; i < n + 1; i++)
 	{
-		parameter << i << " ";
 		for (auto j = 0; j < n; j++) {
 			parameter << selected[i - 1][j];
-			if (j != n)
+			if (j != n + 1)
 				parameter << " ";
 		}
 		if (i != n)
@@ -189,9 +188,31 @@ std::string GLPK_matrixToparam(int(&selected)[1000][1000], int n, std::string pa
 	return parameter.str();
 }
 
-void GLPK(int(&psMatrix)[1000][1000], int n) {
-	std::string parameters;
+std::string GLPK_ss(int n) {
+	std::ostringstream parameter;
+	parameter << "param ss := " << n << ";\n\n";
+	return parameter.str();
+}
 
+std::string GLPK_set(int n, std::string setName) {
+	std::ostringstream parameter;
+	parameter << "set " << setName << " :=";
+	for (auto i = 1; i <= n; i++) {
+		parameter << " " << i;
+	}
+	parameter << ";\n\n";
+	return parameter.str();
+}
+
+std::string GLPK_param(std::string name, std::string param) {
+	std::ostringstream parameter;
+	parameter << "param " << name << " := " << param << ";\n\n";
+	return parameter.str();
+}
+
+void GLPK(int(&psMatrix)[1000][1000], std::string str1, std::string str2) {
+	std::string parameters;
+	auto n = str1.length();
 	int isCharEqual[1000][1000] = { 0 };
 	for (auto i = 0; i < n + 1; i++) {
 		for (auto j = 0; j < n + 1; j++) {
@@ -200,9 +221,20 @@ void GLPK(int(&psMatrix)[1000][1000], int n) {
 			}
 		}
 	}
-	// dl = decisao ligacao
-	parameters += GLPK_matrixToparam(isCharEqual, n, "dc");
+	
+	parameters += GLPK_set(n, "S1");
+	parameters += GLPK_set(n, "S2");
 
+	parameters += GLPK_set(n - 1, "L1");
+	parameters += GLPK_set(n - 1, "L2");
+
+	parameters += GLPK_ss(n);
+	
+	parameters += GLPK_param("string1", str1);
+	parameters += GLPK_param("string2", str2);
+
+	parameters += GLPK_matrixToparam(isCharEqual, n, "c");
+	
 	std::cout << parameters;
 }
 
@@ -233,7 +265,7 @@ int main(int argc, char *argv[])
 	auto greedyGenerator = Greedy(str1, str2, options.seed);
 
 	if (options.glpk) {
-		GLPK(greedyGenerator.psMatrix, str1.length());
+		GLPK(greedyGenerator.psMatrix, str1, str2);
 		return 0;
 	}
 
