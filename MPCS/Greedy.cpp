@@ -1,7 +1,6 @@
 #include "Greedy.h"
 #include <algorithm>
 
-
 Greedy::Greedy(std::string input1, std::string input2, unsigned int seed)
 {
 	this->str1 = input1;
@@ -27,32 +26,20 @@ void Greedy::nextSolution(int (&common)[1000][1000]) {
 	int j = 0;
 	static int psCopy[1000][1000];
 	int locationLongest[2] = { 0, 0 };
-	int overlapSize = 0;
+	int overlapSize = 1;
 	bool firstFlag = true;
 	
+	// Init matrixes
 	for (i = 0; i < str1.length() + 1; i++)
 		for (j = 0; j < str2.length() + 1; j++) {
 			common[i][j] = 0;
 			psCopy[i][j] = psMatrix[i][j];
-			if (psCopy[i][j] > overlapSize) {
-				overlapSize = psCopy[i][j];
-				locationLongest[0] = i;
-				locationLongest[1] = j;
-			}
 		}
 
 	while (overlapSize) {
-		common[locationLongest[0]][locationLongest[1]] = overlapSize;
-		for (i = 0; i < overlapSize; i++)
-			for (j = 0; j <= str2.size(); j++)
-				psCopy[locationLongest[0] - i][j] = 0;
-
-		for (i = 0; i <= str1.size(); i++)
-			for (j = 0; j < overlapSize; j++)
-				psCopy[i][locationLongest[1] - j] = 0;
-
 		overlapSize = 0;
 		firstFlag = true;
+		// Select the block
 		for (int i = 0; i <= str1.size(); i++)
 		{
 			for (int j = 0; j <= str2.size(); j++)
@@ -70,6 +57,17 @@ void Greedy::nextSolution(int (&common)[1000][1000]) {
 				}
 			}
 		}
+		if (overlapSize)
+			common[locationLongest[0]][locationLongest[1]] = overlapSize;
+		// Update select matrix
+		for (i = 0; i < overlapSize; i++)
+			for (j = 0; j <= str2.size(); j++)
+				psCopy[locationLongest[0] - i][j] = 0;
+
+		for (i = 0; i <= str1.size(); i++)
+			for (j = 0; j < overlapSize; j++)
+				psCopy[i][locationLongest[1] - j] = 0;
+
 	}
 }
 
