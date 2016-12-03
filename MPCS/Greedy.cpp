@@ -107,7 +107,7 @@ void Greedy::commonStrings()
 			if (i == 0 || j == 0)
 				psMatrix[i][j] = 0;
 
-			else if (str1[j - 1] == str2[i - 1])
+			else if (str1[i - 1] == str2[j - 1])
 			{
 				psMatrix[i][j] = psMatrix[i - 1][j - 1] + 1;
 			}

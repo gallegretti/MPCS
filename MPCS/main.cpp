@@ -98,7 +98,7 @@ std::vector<std::string> toVector(int(&selected)[1000][1000], const std::string 
 		{
 			auto value = selected[i][j];
 			if (value) {
-				result.push_back(str2.substr(j - value, value));
+				result.push_back(str1.substr(i - value, value));
 			}
 		}
 	return result;
@@ -146,16 +146,20 @@ int localSearch(int(&selected)[1000][1000], int(&psMatrix)[1000][1000], const st
 			col1 = col2;
 			col2 = i;
 		}
-
-		// Caso exista uma unica substring que cubra as duas atuais
-		auto sum = selected[lineWithValue[col2]][col2] + selected[lineWithValue[col1]][col1];
-		if (psMatrix[lineWithValue[col2]][col2] >= sum)
+		
+		// Assegura que os blocos sao vizinhos nas duas strings
+		if ((col2 - lineWithValue[col1] == 0) && (selected[lineWithValue[col2]][col2] - col1 == 0))
 		{
-			// Desmarca a primeira substring
-			selected[lineWithValue[col1]][col1] = 0;
-			// Re-marca a nova, sabendo que vai cobrir a anterior
-			selected[lineWithValue[col2]][col2] = sum;
-			blocos--;
+			// Caso exista uma unica substring que cubra as duas atuais
+			auto sum = selected[lineWithValue[col2]][col2] + selected[lineWithValue[col1]][col1];
+			if (psMatrix[lineWithValue[col2]][col2] >= sum)
+			{
+				// Desmarca a primeira substring
+				selected[lineWithValue[col1]][col1] = 0;
+				// Re-marca a nova, sabendo que vai cobrir a anterior
+				selected[lineWithValue[col2]][col2] = sum;
+				blocos--;
+			}
 		}
 	}
 	return blocos;
@@ -168,6 +172,7 @@ int main(int argc, char *argv[])
 	
 	std::string str1, str2;
 	int selected[1000][1000] = { 0 };
+	
 	
 	if (argc < 2) {
 		showHelp();
@@ -190,8 +195,10 @@ int main(int argc, char *argv[])
 		std::cout << "Seed: " << options.seed << std::endl;
 		std::cout << "Maximum time: " << options.maximumSeconds << "s" << std::endl;
 	}
-	
-	
+	/*
+	str1 = "abab";
+	str2 = "abba";
+	*/
 	std::vector<std::string> best;
 	auto greedyGenerator = Greedy(str1, str2, options.seed);
 
@@ -203,7 +210,7 @@ int main(int argc, char *argv[])
 		// Local search
 		auto blocos = localSearch(selected, greedyGenerator.psMatrix, str1, str2);
 		// Select if it's better
-		if (blocos < best.size() || best.size() == 0)
+		if ((selected, str1, str2).size() < best.size() || best.size() == 0)
 		{
 			best = toVector(selected, str1, str2);
 		}
