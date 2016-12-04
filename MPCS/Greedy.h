@@ -1,10 +1,9 @@
 #pragma once
 #include <string>
+#include <vector>
 #include <iostream>
-#include "Solution.h"
 #include <algorithm>
 #include <stdlib.h>
-
 
 
 class Greedy

@@ -1,5 +1,4 @@
 #include "Greedy.h"
-#include <algorithm>
 
 Greedy::Greedy(std::string input1, std::string input2, unsigned int seed)
 {
