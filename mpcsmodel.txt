@@ -5,7 +5,8 @@
 # Solução: Uma partição P de x em substrings, que também é uma partição de y em substrings.
 #
 # Objetivo: Minimizar o número |P| de substrings na partição.
-#
+#
+
 # Desenvolvido por:
 #              Diego Dasso Migotto
 #              Gabriel Allegretti
@@ -14,48 +15,36 @@
 param ss;
 /* Tamanho das Strings */
 
-param string1, symbolic;
-/* String 1 */
+set S;
+/* Index String */
 
-param string2, symbolic;
-/* String 2 */
-
-set S1;
-/* Index String 1 */
-
-set S2;
-/* Index String 2 */
-
-set L1;
+set L;
 /* Ligações da String 1 */
 
-set L2;
-/* Ligações da String 2 */
+param c{i in S, j in S};
+/* Caracteres iguais entre S e S */
 
-param c{i in S1, j in S2};
-/* Caracteres iguais entre S1 e S2 */
-
-var dc{i in S1, j in S2}, binary;
+var dc{i in S, j in S}, binary;
 /* Decisão de qual dupla de caracteres iguais utilizar */
 
-var dl{x in L1, y in L2}, binary;
+var dl{x in L, y in L}, binary;
 /* Decisão de qual ligações utilizar */
 
-maximize num_ligacoes: sum{x in L1, y in L2} dl[x,y];
+maximize num_ligacoes: sum{x in L, y in L} dl[x,y];
 /* Número de substrings selecionadas para formar a partição */
 
-s.t. dcs1{i in S1}: sum{j in S2} dc[i,j] = 1;
+s.t. dcS{i in S}: sum{j in S} dc[i,j] = 1;
 /* Cada caracter da string 1 só pode ser escolhido uma vez */
 
-s.t. dcs2{j in S2}: sum{i in S1} dc[i,j] = 1;
+s.t. dcs2{j in S}: sum{i in S} dc[i,j] = 1;
 /* Cada caracter da string 2 só pode ser escolhido uma vez */
 
-s.t. lece{x in L1, y in L2}: dl[x,y] <= dc[x,y]; 
+s.t. lece{x in L, y in L}: dl[x,y] <= dc[x,y]; 
 
-s.t. lece2{x in L1, y in L2}: dl[x,y] <= dc[x+1,y+1];
+s.t. lece2{x in L, y in L}: dl[x,y] <= dc[x+1,y+1];
 /* Somente podem ser escolhidas ligações entre caracteres escolhidos */
 
-s.t. r1{i in S1, j in S2}: dc[i,j] <= c[i,j];
+s.t. r1{i in S, j in S}: dc[i,j] <= c[i,j];
 /* Garante que escolherá caracteres iguais existentes */
 
 solve;
@@ -63,31 +52,9 @@ solve;
 # Report / Result Section (Optional)
 
 printf '#################################################\n';
-printf '# PROBLEMA: MPCS \n#\n';
-printf '# String 1: %s \n#\n', string1;
-printf '# String 2: %s \n#\n', string2;
 printf '# Numero de substrings = %.d\n#\n', ss - num_ligacoes;
+printf '#################################################\n';
 
-printf '# Matriz de decisão dos caracteres:\n#\n';
-for {i in S1} {
-	printf '#';
-	for {j in S2} {
-		printf ' %d', dc[i,j];
-	}
-	printf '\n';
-}
 printf '#\n';
-
-printf '# Matriz de decisao das ligacoes:\n#\n';
-for {i in L1} {
-	printf '#';
-	for {j in L2} {
-		printf ' %d', dl[i,j];
-	}
-	printf '\n';
-}
-printf '#\n';
-
-printf '# FIM DOS RESULTADOS\n\n';
 
 end;
