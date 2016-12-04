@@ -1,0 +1,24 @@
+"max" sum from "i in L, y in L" dl[i][j]
+
+c[i][j] = "string1[i]" "==" "string2[j]", forall i in "L", forall j in "L"
+
+forall i In S: sum from j in S "dc[i][j]" = 1
+
+forall j In S: sum from i in S "dc[i][j]" = 1
+
+
+
+forall i in L, forall j in L: dl[i,j] <= c[i,j]
+
+forall i in L, forall j in L: dl[i,j] <= c[i+1,j+1]
+
+
+forall i in S, forall j in S: dl[i,j] <= c[i,j]
+
+
+
+L in [ ss ]
+
+S in [ ss - 1 ]
+
+cc[i][j], {i in S, j in S}, c[i][j] in binary;
