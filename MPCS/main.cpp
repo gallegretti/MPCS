@@ -223,11 +223,11 @@ void GLPK(int(&psMatrix)[1000][1000], std::string str1, std::string str2) {
 		}
 	}
 	
-	parameters += GLPK_set(n, "S1");
-	parameters += GLPK_set(n, "S2");
+	parameters += GLPK_set(n, "S");
+	//parameters += GLPK_set(n, "S2");
 
-	parameters += GLPK_set(n - 1, "L1");
-	parameters += GLPK_set(n - 1, "L2");
+	parameters += GLPK_set(n - 1, "L");
+	//parameters += GLPK_set(n - 1, "L2");
 
 	parameters += GLPK_ss(n);
 	
@@ -235,7 +235,7 @@ void GLPK(int(&psMatrix)[1000][1000], std::string str1, std::string str2) {
 	//parameters += GLPK_param("string2", str2);
 
 	parameters += GLPK_matrixToparam(isCharEqual, n, "c");
-	
+
 	std::cout << parameters;
 }
 
