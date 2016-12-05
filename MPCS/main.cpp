@@ -1,9 +1,11 @@
 #include <iostream>
 #include <string>
-#include "Greedy.h"
 #include <fstream>
 #include <time.h>
 #include <sstream>
+#include <vector>
+
+#include "Greedy.h"
 
 struct Options {
 	int maximumSeconds;
@@ -54,10 +56,10 @@ void showHelp()
 	std::cout << "Usage: mpcs.exe <file> [options]\n" << std::endl;
 	std::cout << "For a <file> that has two related strings, one per line\n" << std::endl;
 	std::cout << "options:\n" << std::endl;
-	std::cout << "--glpk         Returns the GLPK formulation for the input in the stdout" << std::endl;
-	std::cout << "-s <seed>      Seed to be used in the GRASP's RNG (Does not apply to --glpk)" << std::endl;
+	std::cout << "--glpk         Outputs the GLPK data for the problem in the stdout" << std::endl;
+	std::cout << "-s <seed>      Seed to be used in the GRASP's RNG                 (Does not apply to --glpk)" << std::endl;
 	std::cout << "-t <seconds>   Time in seconds that the program is allowed to run (Does not apply to --glpk)" << std::endl;
-	std::cout << "--verbose      Prints verbose log in the stdout (Does not apply to --glpk)" << std::endl;
+	std::cout << "--verbose      Prints verbose log in the stdout                   (Does not apply to --glpk)" << std::endl;
 }
 
 bool readStringsFromFile(char * file, std::string &string1, std::string &string2)
@@ -236,6 +238,7 @@ void GLPK(int(&psMatrix)[1000][1000], std::string str1, std::string str2) {
 
 	parameters += GLPK_matrixToparam(isCharEqual, n, "c");
 
+	//parameters += "end;\n";
 	std::cout << parameters;
 }
 
